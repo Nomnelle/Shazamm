@@ -4,25 +4,26 @@
  */
 package shazamm;
 
+import java.util.Scanner;
+
 /**
  *
  * @author nomnelle
  */
 public class Sorcier {
     
-    String nom;
-    Carte[] deck;
-    String couleur;
-    int position;
-    int mana;
+    private String nom;
+    private String[] deck;
+    private String couleur;
+    private int position;
+    private int mana;
 
     public Sorcier(String n, String c, int p){
         
         this.nom = n;
         this.couleur = c;
         this.position = p;
-        this.mana = 50;
-        
+        this.mana = 50; 
     }
     
     public String getNom(){
@@ -41,13 +42,15 @@ public class Sorcier {
     public int getPosition(){
         return this.position;
     }
-
-    public void setNom(String s){
-        this.nom = s;
-    }
     
     public void setPosition(int i){
-        this.position = i;
+        if(i<0){
+            this.position = 0;
+        }else if(i>18){
+            this.position = 18;
+        }else{
+            this.position = i;
+        }
     }
     
     public void setMana(int i){
@@ -57,6 +60,29 @@ public class Sorcier {
     @Override
     public String toString(){
         return "Abracadabra";
+    }
+    
+    public int miser(){
+        Scanner sc = new Scanner(System.in);
+        boolean correcte = false;
+        int mise = 0;
+        while(!(correcte)){
+            try{
+                System.out.printf("%s, combien de points de mana souhaitez vous miser ?\n", this.nom);
+                mise = sc.nextInt();
+                if(mise<0){
+                    System.out.println("Veuillez rentrer un nombre positif.");
+                }else if(mise>this.mana){
+                    System.out.println("Vous n'avez pas assez de mana, veuillez rentrer une mise inférieure.");
+                }else{
+                    System.out.printf("Vous avez misé %d points de mana\n", mise);
+                    correcte = true;
+                }
+            }catch(java.util.InputMismatchException e){
+                System.out.println("Veuillez rentrer un nombre entier.");
+            }
+        }
+        return mise;
     }
     
 }

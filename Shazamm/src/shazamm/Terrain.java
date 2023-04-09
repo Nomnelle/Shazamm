@@ -4,6 +4,8 @@
  */
 package shazamm;
 
+import java.util.Arrays;
+
 /**
  *
  * @author linazaarate
@@ -12,11 +14,13 @@ public class Terrain {
     
     private int nbCaseDeplacement;
     private int positionFeu;
-    private Terrain [] tabPont;
+    private boolean[] tabPont;
     
-    public Terrain(int c, int f){
-        this.nbCaseDeplacement = c;
-        this.positionFeu = f;
+    public Terrain(){
+        this.nbCaseDeplacement = 1;
+        this.positionFeu = 10;
+        tabPont = new boolean[19];
+        Arrays.fill(tabPont, true);
     }
     
     public int getNbCaseDeplacement(){
@@ -27,11 +31,29 @@ public class Terrain {
         return this.positionFeu;
     }
     
+    public boolean getTabPontCase(int i){
+        return this.tabPont[i];
+    }
+    
     public void setNbCaseDeplacement(int i){
         this.nbCaseDeplacement = i;
     }
     
     public void setPositionFeu(int i){
         this.positionFeu = i;
+    }
+    
+    public void ecrouler(){
+        for(int i=0;i<this.tabPont.length;i++)
+            if(this.tabPont[i]==true){
+                this.tabPont[i]=false;
+                break;
+            }
+        for(int i=this.tabPont.length-1;i>0;i--){
+            if(this.tabPont[i]==true){
+                this.tabPont[i]=false;
+                break;
+            }
+        }
     }
 }
