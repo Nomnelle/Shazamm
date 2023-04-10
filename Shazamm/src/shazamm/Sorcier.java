@@ -45,6 +45,7 @@ public class Sorcier {
         this.deck[13] = new Aspiration();
         
         this.initMain();
+        System.out.println(main.toString());
         }
     
     public String getNom(){
@@ -115,6 +116,7 @@ public class Sorcier {
             pioche = rd.nextInt(14);
             if(!(main.contains(pioche))){
                 main.add(pioche);
+                correct = true;
             }
         }
     }
