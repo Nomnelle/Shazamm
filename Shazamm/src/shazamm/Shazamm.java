@@ -4,6 +4,7 @@
  */
 package shazamm;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -28,6 +29,9 @@ public class Shazamm {
         while(game){
             int miseJ1 = j1.miser();
             int miseJ2 = j2.miser();
+            
+            ArrayList<Integer> sortTActJ1 = j1.lancerSort();
+            ArrayList<Integer> sortTActJ2 = j2.lancerSort();
             
             if(miseJ1<miseJ2){
                 System.out.println("Le feu avance vers le joueur 1.");

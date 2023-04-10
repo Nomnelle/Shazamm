@@ -16,7 +16,7 @@ public class Sorcier {
     
     private final String nom;
     private Carte[] deck;
-    private ArrayList main;
+    private ArrayList<Integer> main;
     private final String couleur;
     private int position;
     private int mana;
@@ -122,10 +122,60 @@ public class Sorcier {
     }
     
     private void initMain(){
-        this.main = new ArrayList<Integer>();
+        this.main = new ArrayList<>();
         for(int i=0;i<5;i++){
            this.piocher();
         }
+    }
+    
+    public ArrayList<Integer> lancerSort(){
+        boolean tour = true;
+        Scanner sc = new Scanner(System.in);
+        String answer;
+        ArrayList<Integer> sortLance = new ArrayList<>();
+        while(tour){
+            if(this.main.isEmpty()){
+                System.out.println("Vous n'avez plus de sort à jouer.");
+                tour = false;
+            }else{
+                System.out.println("Vous disposez des sorts suivants :");
+                for (int num : this.main) {
+                    System.out.printf("%d. %s\n", num, this.deck[num].getName());
+                }
+                System.out.println("Souhaitez vous lancer un sort ? y/n");
+                answer = sc.nextLine();
+                if(answer.equalsIgnoreCase("y")){
+                    sortLance = this.selectionSort(sortLance);
+                }else{
+                    System.out.println("Fin de votre phase pour lancer les sorts.");
+                    tour = false;
+                }   
+            }
+        }
+        
+        return sortLance;
+        
+    }
+    
+    private ArrayList<Integer> selectionSort(ArrayList<Integer> sorts){
+        System.out.println("Saisissez le numéro du sort que vous voulez lancer.");
+        int sort;
+        int index;
+        Scanner sc = new Scanner(System.in);
+        try{
+            sort = sc.nextInt();
+            if(main.contains(sort)){
+                sorts.add(sort);
+                index = main.indexOf(sort);
+                main.remove(index);
+                System.out.printf("Vous avez choisi le sort %s.", this.deck[sort].getName());
+            }else{
+                System.out.println("Vous n'avez pas ce sort dans votre main.");
+            }
+        }catch(java.util.InputMismatchException e){
+            System.out.println("Entrée non valide.");
+        }
+        return sorts;
     }
     
 }
