@@ -4,6 +4,8 @@
  */
 package shazamm;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -12,9 +14,10 @@ import java.util.Scanner;
  */
 public class Sorcier {
     
-    private String nom;
-    private String[] deck;
-    private String couleur;
+    private final String nom;
+    private Carte[] deck;
+    private ArrayList main;
+    private final String couleur;
     private int position;
     private int mana;
 
@@ -23,8 +26,26 @@ public class Sorcier {
         this.nom = n;
         this.couleur = c;
         this.position = p;
-        this.mana = 50; 
-    }
+        this.mana = 50;
+        this.deck = new Carte[14];
+        
+        this.deck[0] = new Mutisme();
+        this.deck[1] = new Clone();
+        this.deck[2] = new Larcin();
+        this.deck[3] = new Fin();
+        this.deck[4] = new Milieu();
+        this.deck[5] = new Recyclage();
+        this.deck[6] = new Boost();
+        this.deck[7] = new DoubleDose();
+        this.deck[8] = new PerdGagne();
+        this.deck[9] = new Brasier();
+        this.deck[10] = new Resistance();
+        this.deck[11] = new Harpagon();
+        this.deck[12] = new Reserve();
+        this.deck[13] = new Aspiration();
+        
+        this.initMain();
+        }
     
     public String getNom(){
         return this.nom;
@@ -70,12 +91,12 @@ public class Sorcier {
             try{
                 System.out.printf("%s, combien de points de mana souhaitez vous miser ?\n", this.nom);
                 mise = sc.nextInt();
-                if(mise<0){
-                    System.out.println("Veuillez rentrer un nombre positif.");
+                if(mise<1){
+                    System.out.println("Veuillez rentrer supérieur ou égal à 1.");
                 }else if(mise>this.mana){
                     System.out.println("Vous n'avez pas assez de mana, veuillez rentrer une mise inférieure.");
                 }else{
-                    System.out.printf("Vous avez misé %d points de mana\n", mise);
+                    System.out.printf("Vous avez misé %d points de mana.\n", mise);
                     correcte = true;
                 }
             }catch(java.util.InputMismatchException e){
@@ -83,6 +104,26 @@ public class Sorcier {
             }
         }
         return mise;
+    }
+    
+    public void piocher(){
+        Random rd = new Random();
+        boolean correct = false;
+        int pioche;
+        
+        while(!(correct)){
+            pioche = rd.nextInt(14);
+            if(!(main.contains(pioche))){
+                main.add(pioche);
+            }
+        }
+    }
+    
+    private void initMain(){
+        this.main = new ArrayList<Integer>();
+        for(int i=0;i<5;i++){
+           this.piocher();
+        }
     }
     
 }

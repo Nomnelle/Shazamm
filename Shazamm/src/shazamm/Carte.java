@@ -10,12 +10,12 @@ package shazamm;
  */
 public abstract class Carte {
     
-    private boolean active;
-    private int numero;
-    private String name;
-    private String image;
+    protected boolean active;
+    protected int numero;
+    protected String name;
+    protected  String image;
     
-    public Carte(int n){
+    public Carte(){
         this.active = false;
     }
     

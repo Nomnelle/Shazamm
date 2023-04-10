@@ -15,10 +15,12 @@ public class Terrain {
     private int nbCaseDeplacement;
     private int positionFeu;
     private boolean[] tabPont;
+    private boolean sort;
     
     public Terrain(){
         this.nbCaseDeplacement = 1;
         this.positionFeu = 10;
+        this.sort = true; 
         tabPont = new boolean[19];
         Arrays.fill(tabPont, true);
     }
@@ -35,12 +37,20 @@ public class Terrain {
         return this.tabPont[i];
     }
     
+    public boolean getSort(){
+        return this.sort;
+    }
+    
     public void setNbCaseDeplacement(int i){
         this.nbCaseDeplacement = i;
     }
     
     public void setPositionFeu(int i){
         this.positionFeu = i;
+    }
+    
+    public void setSort(){
+        this.sort = !(this.sort);
     }
     
     public void ecrouler(){
