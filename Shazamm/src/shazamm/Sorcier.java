@@ -160,7 +160,6 @@ public class Sorcier {
         String answer;
         this.sortPrecedent = new ArrayList(this.sortActuel);
         this.sortActuel.clear();
-        System.out.println(this.sortPrecedent);
         while(tour){
             if(this.main.isEmpty()){
                 System.out.println("Vous n'avez plus de sort à jouer.");

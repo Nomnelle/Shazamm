@@ -4,7 +4,6 @@
  */
 package shazamm;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
