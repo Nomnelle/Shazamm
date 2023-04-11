@@ -21,7 +21,6 @@ public class Mutisme extends Carte{
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
            t.setSort();
-           this.active = true;
        }
     }
     

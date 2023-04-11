@@ -20,7 +20,8 @@ public class Reserve extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
-           this.active = true;
+           System.out.println("Un sort regarni la réserve de mana.");
+           j1.setMise(j1.getMise()+13);
        }
     }
     

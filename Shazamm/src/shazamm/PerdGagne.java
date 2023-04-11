@@ -20,8 +20,7 @@ public class PerdGagne extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
-           this.active = true;
-           t.setPositionFeu(-t.getPositionFeu());
+           t.setNbCaseDeplacement(-t.getNbCaseDeplacement());
        }
     }
     

@@ -20,7 +20,7 @@ public class Aspiration extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
-           this.active = true;
+           j1.setMana(j1.getMana()+j2.getMise());
        }
     }
     

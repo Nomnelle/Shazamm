@@ -25,26 +25,152 @@ public class Shazamm {
         Sorcier j1 = new Sorcier(name, "rouge", t.getPositionFeu()-3);
         System.out.println("Joueur 2, quel est votre nom ?");
         name = sc.nextLine();
-        Sorcier j2 = new Sorcier(name, "bleu", t.getPositionFeu()+3);
+        Sorcier j2 = new Sorcier(name, "vert", t.getPositionFeu()+3);
         while(game){
-            int miseJ1 = j1.miser();
-            int miseJ2 = j2.miser();
             
-            ArrayList<Integer> sortTActJ1 = j1.lancerSort();
-            ArrayList<Integer> sortTActJ2 = j2.lancerSort();
+            j1.miser();
+            j2.miser();
             
-            if(miseJ1<miseJ2){
-                System.out.println("Le feu avance vers le joueur 1.");
-                t.setPositionFeu(t.getPositionFeu()-1);
-            }else if(miseJ1>miseJ2){
-                System.out.println("Le feu avance vers le joueur 2.");
-                t.setPositionFeu(t.getPositionFeu()+1);
+            if(t.getSort()){
+                j1.lancerSort();
+                j2.lancerSort();
+            }
+            
+            if(j1.getSortActuel().contains(0)){
+                j1.getInDeck(0).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(0)){
+                j2.getInDeck(0).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(1)){
+                j1.getInDeck(1).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(1)){
+                j2.getInDeck(1).effet(t, j2, j1);
+            }
+            
+            if((j1.getSortActuel().contains(2))&&(j2.getSortActuel().contains(2))){
+                System.out.println("Les deux joueurs tentent de voler l'adversaire en même temps... Pas très discret ! Rien ne change.");
+            }else if(j1.getSortActuel().contains(2)){
+                j1.getInDeck(2).effet(t, j1, j2);
+            }else if(j2.getSortActuel().contains(2)){
+                j2.getInDeck(2).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(3)){
+                j1.getInDeck(3).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(3)){
+                j2.getInDeck(3).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(4)){
+                j1.getInDeck(4).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(4)){
+                j2.getInDeck(4).effet(t, j2, j1);
+            }
+
+            if(j1.getSortActuel().contains(5)){
+                j1.getInDeck(5).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(5)){
+                j2.getInDeck(5).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(6)){
+                j1.getInDeck(6).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(6)){
+                j2.getInDeck(6).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(7)){
+                j1.getInDeck(7).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(7)){
+                j2.getInDeck(7).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(8)){
+                j1.getInDeck(8).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(5)){
+                j2.getInDeck(8).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(9)){
+                j1.getInDeck(9).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(9)){
+                j2.getInDeck(9).effet(t, j2, j1);
+            }
+            
+            if(j1.getMise()<j2.getMise()){
+                if(j1.getSortActuel().contains(10)){
+                    j1.getInDeck(10).effet(t, j1, j2);
+                }
+                if(j1.getSortActuel().contains(11)){
+                    j1.getInDeck(11).effet(t, j1, j2);
+                }
+                if(j1.getSortActuel().contains(8)||j2.getSortActuel().contains(8)){
+                    System.out.println("Le feu avance vers le gagnant...");
+                    t.setPositionFeu(t.getPositionFeu()-t.getNbCaseDeplacement());
+                }else{
+                    System.out.println("Le feu avance vers le joueur 1.");
+                    t.setPositionFeu(t.getPositionFeu()-t.getNbCaseDeplacement());
+                }
+            }else if(j1.getMise()>j2.getMise()){
+                if(j2.getSortActuel().contains(10)){
+                    j2.getInDeck(10).effet(t, j2, j1);
+                }
+                if(j2.getSortActuel().contains(11)){
+                    j2.getInDeck(11).effet(t, j2, j1);
+                }
+                if(j1.getSortActuel().contains(8)||j2.getSortActuel().contains(8)){
+                    System.out.println("Le feu avance vers le gagnant...");
+                    t.setPositionFeu(t.getPositionFeu()-t.getNbCaseDeplacement());
+                }else{
+                    System.out.println("Le feu avance vers le joueur 2.");
+                    t.setPositionFeu(t.getPositionFeu()+t.getNbCaseDeplacement());
+                }
             }else{
                 System.out.println("Le feu reste sur sa position.");
             }
             
-            j1.setMana(j1.getMana()- miseJ1);
-            j2.setMana(j2.getMana()- miseJ2);
+            if(t.getNbCaseDeplacement()!=1){
+                    t.setNbCaseDeplacement(1);
+            }
+            
+            if(j1.getSortActuel().contains(13)){
+                j1.setMise(j1.getMise()/2);
+            }
+            if(j1.getSortActuel().contains(12)){
+                j1.setMise(j1.getMise()-7);
+            }
+            
+            if(j2.getSortActuel().contains(13)){
+                j2.setMise(j2.getMise()/2);
+            }
+            if(j2.getSortActuel().contains(12)){
+                j2.setMise(j2.getMise()-7);
+            }
+            
+            j1.setMana(j1.getMana()- j1.getMise());
+            j2.setMana(j2.getMana()- j2.getMise());
+            
+            if(j1.getSortActuel().contains(12)){
+                j1.getInDeck(12).effet(t, j1, j2);
+            }else if(j2.getSortActuel().contains(12)){
+                j2.getInDeck(12).effet(t, j2, j1);
+            }
+            
+            if(j1.getSortActuel().contains(13)){
+                j1.getInDeck(13).effet(t, j1, j2);
+            }else if(j2.getSortActuel().contains(13)){
+                j2.getInDeck(13).effet(t, j2, j1);
+            }
             
             if((t.getPositionFeu()<=j1.getPosition())||(j1.getMana()==0)){
                 System.out.println("Le joueur 1 se fait engloutir par les flammes...");
@@ -58,6 +184,11 @@ public class Shazamm {
                 j2.setMana(50);
                 
                 t.ecrouler();
+                
+                if(!(t.getSort())){
+                    t.setSort();
+                }
+                
             }else if((t.getPositionFeu()>=j2.getPosition())||(j2.getMana()==0)){
                 System.out.println("Le joueur 2 se fait engloutir par les flammes...");
                 if(j2.getMana()==0){
@@ -70,6 +201,10 @@ public class Shazamm {
                 j2.setMana(50);
                 
                 t.ecrouler();
+                
+                if(!(t.getSort())){
+                    t.setSort();
+                }
             }
             
             if(!(t.getTabPontCase(j1.getPosition()))){

@@ -20,7 +20,8 @@ public class Resistance extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
-           this.active = true;
+           System.out.println("Un sort empêche le feu de bouger.");
+           t.setNbCaseDeplacement(0);
        }
     }
     

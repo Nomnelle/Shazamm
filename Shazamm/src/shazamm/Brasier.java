@@ -20,7 +20,6 @@ public class Brasier extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
-           this.active = true;
            if(t.getNbCaseDeplacement()==1){
                t.setNbCaseDeplacement(t.getNbCaseDeplacement()+1);
            }else if(t.getNbCaseDeplacement()==-1){
