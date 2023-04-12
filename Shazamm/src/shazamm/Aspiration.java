@@ -20,6 +20,7 @@ public class Aspiration extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
+           System.out.printf("%s vole la mise de %s...;\n", j1.getNom(), j2.getNom());
            j1.setMana(j1.getMana()+j2.getMise());
        }
     }
