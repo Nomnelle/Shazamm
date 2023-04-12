@@ -188,6 +188,11 @@ public class Shazamm {
                     t.setSort();
                 }
                 
+                for(int i = 0;i<3;i++){
+                    j1.piocher();
+                    j2.piocher();
+                }
+                
             }else if((t.getPositionFeu()>=j2.getPosition())||(j2.getMana()==0)){
                 System.out.println("Le joueur 2 se fait engloutir par les flammes...");
                 if(j2.getMana()==0){
@@ -203,6 +208,11 @@ public class Shazamm {
                 
                 if(!(t.getSort())){
                     t.setSort();
+                }
+                
+                for(int i = 0;i<3;i++){
+                    j1.piocher();
+                    j2.piocher();
                 }
             }
             

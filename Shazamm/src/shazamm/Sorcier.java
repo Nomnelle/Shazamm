@@ -140,9 +140,14 @@ public class Sorcier {
         
         while(!(correct)){
             pioche = rd.nextInt(14);
-            if(!(main.contains(pioche))){
-                main.add(pioche);
-                correct = true;
+            if(this.main.size()<15){
+                if(!(main.contains(pioche))){
+                    main.add(pioche);
+                    correct = true;
+                }
+            }else{
+                System.out.println("Vous avez déjà tous les sorts disponibles dans votre main.");
+                correct = true; 
             }
         }
     }

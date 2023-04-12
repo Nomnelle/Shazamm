@@ -20,6 +20,7 @@ public class Brasier extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
+           System.out.println("Un sort fait que le feu s'intensifie...");
            if(t.getNbCaseDeplacement()==1){
                t.setNbCaseDeplacement(t.getNbCaseDeplacement()+1);
            }else if(t.getNbCaseDeplacement()==-1){

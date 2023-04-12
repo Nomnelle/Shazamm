@@ -19,6 +19,7 @@ public class Boost extends Carte{
     
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
+        System.out.printf("L'attaque de %s est augmentée !", j1.getNom());
         j1.setMise(j1.getMise()+7);
     }
 }

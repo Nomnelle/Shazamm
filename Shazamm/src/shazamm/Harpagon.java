@@ -20,7 +20,7 @@ public class Harpagon extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
-           System.out.println("Un sort fait que le perdant garde sa mise.");
+           System.out.printf("Un sort fait que %s garde sa mise.", j1.getNom());
            j1.setMise(0);
        }
     }

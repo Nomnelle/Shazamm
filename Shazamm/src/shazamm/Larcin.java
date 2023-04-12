@@ -22,6 +22,7 @@ public class Larcin extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){
        if(t.getSort()){
+           System.out.printf("Les sorts de %s sont sous le contrôle de %s !", j2.getNom(), j1.getNom());
            ArrayList<Integer> tmp = new ArrayList<>();
            tmp = j2.getSortActuel();
            j1.setSortActuel(tmp);
