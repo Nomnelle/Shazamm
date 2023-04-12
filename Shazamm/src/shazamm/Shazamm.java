@@ -142,22 +142,23 @@ public class Shazamm {
                     t.setNbCaseDeplacement(1);
             }
             
-            if(j1.getSortActuel().contains(13)){
+            if(j1.getSortActuel().contains(7)){
                 j1.setMise(j1.getMise()/2);
             }
-            if(j1.getSortActuel().contains(12)){
+            if(j1.getSortActuel().contains(6)){
                 j1.setMise(j1.getMise()-7);
             }
             
-            if(j2.getSortActuel().contains(13)){
+            if(j2.getSortActuel().contains(7)){
                 j2.setMise(j2.getMise()/2);
             }
-            if(j2.getSortActuel().contains(12)){
+            if(j2.getSortActuel().contains(6)){
                 j2.setMise(j2.getMise()-7);
             }
             
             j1.setMana(j1.getMana()- j1.getMise());
             j2.setMana(j2.getMana()- j2.getMise());
+            
             
             if(j1.getSortActuel().contains(12)){
                 j1.getInDeck(12).effet(t, j1, j2);
