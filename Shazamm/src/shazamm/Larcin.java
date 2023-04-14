@@ -12,22 +12,20 @@ import java.util.ArrayList;
  */
 public class Larcin extends Carte{
     
-    public Larcin(){
-        super();
-        this.numero = 3;
+    public Larcin(){  //constructeur 
+        super();  //constructeur classe mère 
         this.name = "Larcin";
         this.image = "";
     }
     
     @Override
-    public void effet(Terrain t, Sorcier j1, Sorcier j2){
-       if(t.getSort()){
+    public void effet(Terrain t, Sorcier j1, Sorcier j2){  //les sorts de l'adversaires passent sous le contrôle du joueur 
+       if(t.getSort()){  //si le joueur peut lancer des sorts 
            System.out.printf("Les sorts de %s sont sous le contrôle de %s !", j2.getNom(), j1.getNom());
-           ArrayList<Integer> tmp = new ArrayList<>();
-           tmp = j2.getSortActuel();
-           j1.setSortActuel(tmp);
+           ArrayList<Integer> tmp = new ArrayList<>(j2.getSortActuel()); //on récupère les sorts de l'adversaire 
+           j1.setSortActuel(tmp);  //on les ajoute à ceux du joueur 
            tmp.clear();
-           j2.replaceSortActuel(tmp);
+           j2.replaceSortActuel(tmp);  //L'adversaire n'a plus de sort 
        }
     }
     

@@ -10,15 +10,14 @@ package shazamm;
  */
 public class Mutisme extends Carte{
     
-    public Mutisme(){
-        super();
-        this.numero = 1;
+    public Mutisme(){  //constructeur 
+        super();  //constructeur classe mère 
         this.name = "Mutisme";
         this.image = "";
     }
     
     @Override
-    public void effet(Terrain t, Sorcier j1, Sorcier j2){
+    public void effet(Terrain t, Sorcier j1, Sorcier j2){  //Empêche quiconque de lancer des sorts 
        if(t.getSort()){
            System.out.println("Tous les joueurs souffrent de mutisme! Plus personne ne peut lancer de sort.");
            t.setSort();

@@ -10,17 +10,16 @@ package shazamm;
  */
 public class PerdGagne extends Carte{
     
-    public PerdGagne(){
-        super();
-        this.numero = 9;
+    public PerdGagne(){  //constructeur 
+        super();  //constructeur classe mère 
         this.name = "Qui perd gagne";
         this.image = "";
     }
     
     @Override
-    public void effet(Terrain t, Sorcier j1, Sorcier j2){
+    public void effet(Terrain t, Sorcier j1, Sorcier j2){  //le gagnant verra le feu avancer vers lui
        if(t.getSort()){
-           t.setNbCaseDeplacement(-t.getNbCaseDeplacement());
+           t.setNbCaseDeplacement(-t.getNbCaseDeplacement());  
        }
     }
     

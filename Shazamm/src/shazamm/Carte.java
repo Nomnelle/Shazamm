@@ -10,26 +10,22 @@ package shazamm;
  */
 public abstract class Carte {
     
-
-    protected int numero;
-    protected String name;
-    protected  String image;
+    protected String name;  //nom de la carte 
+    protected String image;  //image de la carte 
     
-    public Carte(){
+    public Carte(){  //constructeur 
     }
     
-    public int getNumero(){
-        return this.numero;
-    }
     
-    public String getName(){
+    public String getName(){  //getter 
         return this.name;
     }
     
-    public String getImage(){
+    public String getImage(){  //getter 
         return this.image;
     }
     
-    public abstract void effet(Terrain t, Sorcier j1, Sorcier j2);
+    public abstract void effet(Terrain t, Sorcier j1, Sorcier j2);  //fonction abstraite qui permettra à chaque carte d'avoir un effet propre 
+    // paramètres : terrain, lanceur du sort, adversaire 
     
 }
