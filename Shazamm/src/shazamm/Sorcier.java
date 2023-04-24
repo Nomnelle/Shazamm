@@ -20,7 +20,7 @@ public class Sorcier {
     private ArrayList<Integer> sortActuel; //sorts lancés par le joueur durant le tour en cours
     private ArrayList<Integer> sortPrecedent; //sorts lancés par le joueur durant le tour précédent 
     private final String couleur; //couleur du sorcier in-game 
-    private int position; //position du sorcier sur le point in-game 
+    private int position; //position du sorcier sur le pont in-game 
     private int mana; //nombre de points de mana disponibles 
     private int mise; //nombre de points de mana misés à ce tour 
 
