@@ -117,64 +117,6 @@ public class Interface extends javax.swing.JFrame {
         }
     }
 
-    //Classe Brasier
-    public void effet(Terrain t, Sorcier j1, Sorcier j2) {  //fait que le feu se déplace de deux cases au lieu d'une 
-        if (t.getSort()) {  //si le joueur peut lancer un sort
-            mur_feu.setIcon(new ImageIcon(chemin = ""));//ou mur_feu.setText("");
-            //Cas où le mur de feu se déplace vers le sorcier vert, donc vers la droite
-            if (t.getNbCaseDeplacement() == 1) {  //cas normal 
-                t.setNbCaseDeplacement(t.getNbCaseDeplacement() + 1);  //le feu se déplacera de 2
-                feu_droite.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feudroite.gif"));
-                //Cas où le mur de feu se déplace vers le sorcier rouge, donc vers la gauche
-            } else if (t.getNbCaseDeplacement() == -1) {  //cas où le sort "Qui perd gagne" a été lancé 
-                t.setNbCaseDeplacement(t.getNbCaseDeplacement() - 1);
-                feu_gauche.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feugauche.gif"));
-            }
-            //Classe Resistance
-            t.setNbCaseDeplacement(0); //empêche le feu de se déplacer
-            if (Terrain.positionFeu == 10) {
-                feu_droite.setIcon(new ImageIcon(chemin = ""));
-                feu_gauche.setIcon(new ImageIcon(chemin = ""));
-                mur_feu.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feu.gif"));
-            } else if (Terrain.positionFeu == Interface_1.feu_droite) {
-                feu_droite.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feudroite.gif"));
-                feu_gauche.setIcon(new ImageIcon(chemin = ""));
-                mur_feu.setIcon(new ImageIcon(chemin = ""));
-            } else if (Terrain.positionFeu == Interface_1.feu_gauche) {
-                feu_droite.setIcon(new ImageIcon(chemin = ""));
-                feu_gauche.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feugauche.gif"));
-                mur_feu.setIcon(new ImageIcon(chemin = ""));
-            }
-            // Classe Harpagon seul le cas du joueur  est traité
-            if (Interface_1.feu_gauche == Sorcier.position) {
-                sorcier_rouge.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feugauche.gif"));
-                j1.setMise(0); //passe la mise du joueur à 0, si le joueur perd le tour
-            }
-            // Classe PerdGagne
-            t.setNbCaseDeplacement(-t.getNbCaseDeplacement()); //le gagnant verra le feu avancer vers lui
-            // Cas où le sorcier rouge gagne
-            sorcier_rouge.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feugauche.gif"));
-            // Cas où le sorcier vert gagne
-            sorcier_vert.setIcon(new ImageIcon(chemin = "C:\\Users\\npnoi\\Documents\\NetBeansProjects\\Graphisme\\src\\images-shazamm(1)\\img\\perso\\feudroite.gif"));
-
-            // Classe Milieu
-            if (j1.getPosition() < t.getPositionFeu()) {  //si le joueur 1 lance le sort 
-                t.setPositionFeu(j1.getPosition() + 3);
-
-            } else {  //si le joueur 2 lance le sort 
-                t.setPositionFeu(j1.getPosition() - 3);
-            }
-        }
-
-        if (j1.getPosition() < t.getPositionFeu()) {  //si c'est le joueur 1 qui joue le sort 
-            j1.setPosition(t.getPositionFeu() - 3);
-            j2.setPosition(t.getPositionFeu() + 3);
-        } else {  //si c'est le joueur 2 qui joue le sort 
-            j1.setPosition(t.getPositionFeu() + 3);
-            j2.setPosition(t.getPositionFeu() - 3);
-        }
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -184,7 +126,6 @@ public class Interface extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        popup = new javax.swing.JFrame();
         jPanel1 = new javax.swing.JPanel();
         historique = new javax.swing.JTextField();
         pont6 = new javax.swing.JLabel();
@@ -206,29 +147,16 @@ public class Interface extends javax.swing.JFrame {
         pont8 = new javax.swing.JLabel();
         pont4 = new javax.swing.JLabel();
         pont7 = new javax.swing.JLabel();
-        start = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         sorcier_rouge = new javax.swing.JLabel();
         sorcier_vert = new javax.swing.JLabel();
         mur_feu = new javax.swing.JLabel();
-        feu_droite = new javax.swing.JLabel();
-        feu_gauche = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         new_game = new javax.swing.JMenuItem();
         quit = new javax.swing.JMenuItem();
         help = new javax.swing.JMenu();
         about = new javax.swing.JMenuItem();
-
-        javax.swing.GroupLayout popupLayout = new javax.swing.GroupLayout(popup.getContentPane());
-        popup.getContentPane().setLayout(popupLayout);
-        popupLayout.setHorizontalGroup(
-            popupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        popupLayout.setVerticalGroup(
-            popupLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Shazamm");
@@ -274,15 +202,10 @@ public class Interface extends javax.swing.JFrame {
 
         pont7.setText("jLabel1");
 
-        start.setText("Start");
-        start.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton1.setText("jButton1");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                startMouseClicked(evt);
-            }
-        });
-        start.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startActionPerformed(evt);
+                jButton1MouseClicked(evt);
             }
         });
 
@@ -291,10 +214,6 @@ public class Interface extends javax.swing.JFrame {
         sorcier_vert.setText("Sorcier vert");
 
         mur_feu.setText("Mur de feu");
-
-        feu_droite.setText("Feu droite");
-
-        feu_gauche.setText("Feu gauche");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -313,7 +232,7 @@ public class Interface extends javax.swing.JFrame {
                         .addComponent(pont3)
                         .addGap(30, 30, 30)
                         .addComponent(pont4))
-                    .addComponent(start))
+                    .addComponent(jButton1))
                 .addGap(27, 27, 27)
                 .addComponent(pont5)
                 .addGap(33, 33, 33)
@@ -323,9 +242,7 @@ public class Interface extends javax.swing.JFrame {
                 .addGap(33, 33, 33)
                 .addComponent(pont7)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(feu_gauche, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pont8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pont8)
                 .addGap(18, 18, 18)
                 .addComponent(pont9)
                 .addGap(36, 36, 36)
@@ -335,9 +252,7 @@ public class Interface extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(pont11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(feu_droite, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pont12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pont12)
                 .addGap(18, 18, 18)
                 .addComponent(pont13)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -365,15 +280,13 @@ public class Interface extends javax.swing.JFrame {
                         .addComponent(historique))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1645, 1645, 1645)
-                        .addComponent(start)
+                        .addComponent(jButton1)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(124, 124, 124)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(sorcier_vert, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(mur_feu, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(feu_droite, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(feu_gauche, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(mur_feu, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(pont1)
@@ -417,11 +330,6 @@ public class Interface extends javax.swing.JFrame {
         quit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         quit.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         quit.setText("Quit");
-        quit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quitActionPerformed(evt);
-            }
-        });
         jMenu1.add(quit);
 
         jMenuBar1.add(jMenu1);
@@ -454,7 +362,7 @@ public class Interface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenu1MouseClicked
 
-    private void startMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startMouseClicked
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
         //Implantation d'images des 19 morceaux du pont non dynamique
         pont1.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\pont\\pont_01.gif"));
@@ -476,30 +384,14 @@ public class Interface extends javax.swing.JFrame {
         pont17.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\pont\\pont_17.gif"));
         pont18.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\pont\\pont_18.gif"));
         pont19.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\pont\\pont_19.gif"));
-
+        
         sorcier_rouge.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\perso\\rouge.gif"));
         sorcier_vert.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\perso\\vert.gif"));
-
+        
         // il y a 3 types de feu le feu initial, un feu allant vers la droite et un feu allant vers la gauche donc 3 jLabels de feu
         mur_feu.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\perso\\feu.gif"));
 
-    }//GEN-LAST:event_startMouseClicked
-
-    private void startActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startActionPerformed
-        // TODO add your handling code here:
-        boolean b = popup.requestFocusInWindow();
-        // demande le focus sur la nouvelle fenêtre
-        popup.pack();
-        // redimensionne la fenêtre popup
-        popup.setVisible(true);
-        // rend la fenêtre visible
-
-    }//GEN-LAST:event_startActionPerformed
-
-    private void quitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quitActionPerformed
-        // TODO add your handling code here:
-        System.exit(0);
-    }//GEN-LAST:event_quitActionPerformed
+    }//GEN-LAST:event_jButton1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -538,10 +430,9 @@ public class Interface extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem about;
-    private javax.swing.JLabel feu_droite;
-    private javax.swing.JLabel feu_gauche;
     private javax.swing.JMenu help;
     private javax.swing.JTextField historique;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
@@ -566,10 +457,8 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JLabel pont7;
     private javax.swing.JLabel pont8;
     private javax.swing.JLabel pont9;
-    private javax.swing.JFrame popup;
     private javax.swing.JMenuItem quit;
     private javax.swing.JLabel sorcier_rouge;
     private javax.swing.JLabel sorcier_vert;
-    private javax.swing.JButton start;
     // End of variables declaration//GEN-END:variables
 }
