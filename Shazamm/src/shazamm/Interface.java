@@ -4,7 +4,10 @@
  */
 package shazamm;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -21,19 +24,17 @@ public class Interface extends javax.swing.JFrame {
     }
 
     public ImageIcon loadImage(String filename) {
-        ImageIcon imageIcon = null;
+        System.out.println(filename);
+        ImageIcon image = null;
         try {
             // Obtenir le chemin de la ressource
-            ClassLoader classLoader = getClass().getClassLoader(); // Classe qui parcourt les différents classe dans la racine du dossier 
-            InputStream inputStream = classLoader.getResourceAsStream("img/" + filename); // Classe abstraite qui contient l'info de l'image
-
-            // Charger l'image à partir du flux d'entrée
-            byte[] bytes = inputStream.readAllBytes();
-            imageIcon = new ImageIcon(bytes);
-        } catch (Exception e) {
+            File imageFile = new File("img/"+filename);
+            InputStream inputStream = new FileInputStream(imageFile);
+            image = new ImageIcon(ImageIO.read(inputStream));
+        }catch(Exception e){
             e.printStackTrace();
         }
-        return imageIcon;
+        return image;
     }
 
     public void update_pont(Terrain t) {  //fonction modélisant l'écroulement du pont //on change quand on en a besoin rather vérification  
@@ -42,9 +43,9 @@ public class Interface extends javax.swing.JFrame {
                 String nomImage = "";
                 int index = i + 1;
                 if (i < 9) {
-                    nomImage = "lave\\lave_0" + index + ".gif";
+                    nomImage = "lave/lave_0" + index + ".gif";
                 } else {
-                    nomImage = "lave\\lave_" + index + ".gif";
+                    nomImage = "lave/lave_" + index + ".gif";
                 }
                 ClassLoader classLoader = getClass().getClassLoader();
                 InputStream inputStream = classLoader.getResourceAsStream(nomImage);
@@ -422,9 +423,9 @@ public class Interface extends javax.swing.JFrame {
             int index = i + 1;
             String nomImage = "";
             if (i < 9) {
-                nomImage = "pont\\pont_0" + index + ".gif";
+                nomImage = "pont/pont_0" + index + ".gif";
             } else {
-                nomImage = "pont\\pont_" + index + ".gif";
+                nomImage = "pont/pont_" + index + ".gif";
             }
             ClassLoader classLoader = getClass().getClassLoader();
             InputStream inputStream = classLoader.getResourceAsStream(nomImage);
@@ -489,7 +490,7 @@ public class Interface extends javax.swing.JFrame {
             }
         }
         
-        sorcier_rouge.setIcon(this.loadImage("perso\\rouge.gif"));
+        sorcier_rouge.setIcon(this.loadImage("perso/rouge.gif"));
 
         
     }//GEN-LAST:event_startMouseClicked
