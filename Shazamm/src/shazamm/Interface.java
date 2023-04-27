@@ -33,9 +33,9 @@ public class Interface extends javax.swing.JFrame {
         ImageIcon image = null;
         try {
             // Obtenir le chemin de la ressource
-            File imageFile = new File("img/"+filename);
-            InputStream don = new FileInputStream(imageFile);
-            image = new ImageIcon(ImageIO.read(don));
+            File imageFile = new File("img/"+filename); // recherche un lien sur notre espace de travail contient le fichier
+            InputStream inputStream = new FileInputStream(imageFile); // contient les infos sous forme binaire du fichier emplacement binaire en 8 en octet
+            image = new ImageIcon(ImageIO.read(inputStream));
         }catch(Exception e){
             e.printStackTrace();
         }
