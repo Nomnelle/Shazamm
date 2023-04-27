@@ -46,24 +46,6 @@ public class Interface extends javax.swing.JFrame {
                     pont9.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_09.gif"));
                 } else if (i == 9) {
                     pont10.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_10.gif"));
-                } else if (i == 10) {
-                    pont11.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_11.gif"));
-                } else if (i == 11) {
-                    pont12.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_12.gif"));
-                } else if (i == 12) {
-                    pont13.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_13.gif"));
-                } else if (i == 13) {
-                    pont14.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_14.gif"));
-                } else if (i == 14) {
-                    pont15.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_15.gif"));
-                } else if (i == 15) {
-                    pont16.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_16.gif"));
-                } else if (i == 16) {
-                    pont17.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_17.gif"));
-                } else if (i == 17) {
-                    pont18.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_18.gif"));
-                } else if (i == 18) {
-                    pont19.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_19.gif"));
                 }
 
                 break;  //et on sort de la boucle 
@@ -72,52 +54,30 @@ public class Interface extends javax.swing.JFrame {
         for (int i = Terrain.tabPont.length - 1; i > 0; i--) {  //cette fois on part de la fin du tableau
             if (Terrain.tabPont[i] == true) {  //première case pas écroulée 
                 Terrain.tabPont[i] = false;  //s'écroulent 
-                if (i == 0) {
-                    pont1.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_01.gif"));
-                } else if (i == 1) {
-                    pont2.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_02.gif"));
-                } else if (i == 2) {
-                    pont3.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_03.gif"));
-                } else if (i == 3) {
-                    pont4.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_04.gif"));
-                } else if (i == 4) {
-                    pont5.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_05.gif"));
-                } else if (i == 5) {
-                    pont6.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_06.gif"));
-                } else if (i == 6) {
-                    pont7.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_07.gif"));
-                } else if (i == 7) {
-                    pont8.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_08.gif"));
-                } else if (i == 8) {
-                    pont9.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_09.gif"));
-                } else if (i == 9) {
-                    pont10.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_10.gif"));
-                } else if (i == 10) {
-                    pont11.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_11.gif"));
-                } else if (i == 11) {
-                    pont12.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_12.gif"));
-                } else if (i == 12) {
-                    pont13.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_13.gif"));
-                } else if (i == 13) {
-                    pont14.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_14.gif"));
-                } else if (i == 14) {
-                    pont15.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_15.gif"));
-                } else if (i == 15) {
-                    pont16.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_16.gif"));
-                } else if (i == 16) {
-                    pont17.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_17.gif"));
+                if (i == 18) {
+                    pont19.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_19.gif"));
                 } else if (i == 17) {
                     pont18.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_18.gif"));
-                } else if (i == 18) {
-                    pont19.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_19.gif"));
-                }
+                } else if (i == 16) {
+                    pont17.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_17.gif"));
+                } else if (i == 15) {
+                    pont16.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_16.gif"));
+                } else if (i == 14) {
+                    pont15.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_15.gif"));
+                } else if (i == 13) {
+                    pont14.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_14.gif"));
+                } else if (i == 12) {
+                    pont13.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_13.gif"));
+                } else if (i == 11) {
+                    pont12.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_12.gif"));
+                } else if (i == 10) {
+                    pont11.setIcon(new ImageIcon(chemin = "C:\\Users\\HP\\Documents\\NetBeansProjects\\Shazamm_autre\\src\\shazamm\\images-shazamm(1)\\img\\lave\\lave_11.gif"));
 
-                break;  //et on sort de la bouche 
+                    break;  //et on sort de la bouche 
+                }
             }
         }
-    }
-
-    //Classe Brasier
+        //Classe Brasier
     public void effet(Terrain t, Sorcier j1, Sorcier j2) {  //fait que le feu se déplace de deux cases au lieu d'une 
         if (t.getSort()) {  //si le joueur peut lancer un sort
             mur_feu.setIcon(new ImageIcon(chemin = ""));//ou mur_feu.setText("");
