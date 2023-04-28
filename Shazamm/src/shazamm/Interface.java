@@ -52,7 +52,7 @@ public class Interface extends javax.swing.JFrame {
                 } else {
                     nomImage = "lave/lave_" + index + ".gif";
                 }
-                //On remplace la case par l'image de lave // écrouke pont on change directement l'image à la place de vérifier
+                //On remplace la case par l'image de lave // écroule pont on change directement l'image à la place de vérifier
 
             }
         }
@@ -186,11 +186,17 @@ public class Interface extends javax.swing.JFrame {
         for(int i = 0;i<pontInterface.length;i++){
 
             String nomImage = "";
+            String nomImageRouge = "";
+            String nomImageVert = "";
                 int index = i + 1;
                 if (i < 9) {
                     nomImage = "pont/pont_0" + index + ".gif";
                 }else{
                     nomImage = "pont/pont_" + index + ".gif";
+                } if (i == 5) {
+                    nomImageRouge = "perso/rouge" + index + ".gif";
+                } if (i == 13) {
+                    nomImageVert = "perso/vert" + index + ".gif";
                 }
                 
             pontInterface[i] = new JLabel();
@@ -199,7 +205,25 @@ public class Interface extends javax.swing.JFrame {
             mainPanel.add(pontInterface[i]);
             pontInterface[i].setIcon(loadImage(nomImage));  
             horizontal = horizontal + 32;
+            // Implantation dynamique du sorcier rouge
+            pontInterface[5] = new JLabel();
+            pontInterface[5].setLocation(horizontal, vertical);
+            pontInterface[5].setSize(32, 54);
+            mainPanel.add(pontInterface[5]);
+            positionInterface[j1.getPosition()].setIcon(loadImage(rouge.gif));
+            pont1.setIcon(this.loadImage("perso\\rouge.gif"));
+            vertical = vertical + 54;
+            // Implantation dynamique du sorcier vert
+            pontInterface[13] = new JLabel();
+            pontInterface[13].setLocation(horizontal, vertical);
+            pontInterface[13].setSize(32,54);
+            mainPanel.add(pontInterface[13]);
+            positionInterface[j2.getPosition()].setIcon(loadImage(vert.gif));
+            pont1.setIcon(this.loadImage("perso\\vert.gif"));
+            vertical = vertical + 54;
+            
         }
+        
     }//GEN-LAST:event_startButtonMouseClicked
 
     /**
