@@ -208,18 +208,26 @@ public class Interface extends javax.swing.JFrame {
             // Implantation dynamique du sorcier rouge
             pontInterface[5] = new JLabel();
             pontInterface[5].setLocation(horizontal, vertical);
-            pontInterface[5].setSize(32, 54);
+            pontInterface[5].setSize(32, 55);
             mainPanel.add(pontInterface[5]);
             positionInterface[j1.getPosition()].setIcon(loadImage(rouge.gif));
-            pont1.setIcon(this.loadImage("perso\\rouge.gif"));
+            pont6.setIcon(this.loadImage("perso\\rouge.gif"));
             vertical = vertical + 54;
             // Implantation dynamique du sorcier vert
             pontInterface[13] = new JLabel();
             pontInterface[13].setLocation(horizontal, vertical);
-            pontInterface[13].setSize(32,54);
+            pontInterface[13].setSize(32,55);
             mainPanel.add(pontInterface[13]);
             positionInterface[j2.getPosition()].setIcon(loadImage(vert.gif));
-            pont1.setIcon(this.loadImage("perso\\vert.gif"));
+            pont14.setIcon(this.loadImage("perso\\vert.gif"));
+            vertical = vertical + 54;
+            // Implantation dynamique du feu
+            pontInterface[9] = new JLabel();
+            pontInterface[9].setLocation(horizontal, vertical);
+            pontInterface[9].setSize(32,54);
+            mainPanel.add(pontInterface[9]);
+            positionInterface[positionFeu.getPosition()].setIcon(loadImage(feu.gif));
+            pont10.setIcon(this.loadImage("perso\\feu.gif"));
             vertical = vertical + 54;
             
         }
