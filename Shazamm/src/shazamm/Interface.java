@@ -4,16 +4,17 @@
  */
 package shazamm;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 
 /**
  *
@@ -24,19 +25,35 @@ public class Interface extends javax.swing.JFrame {
     /**
      * Creates new form Interface
      */
+    
     public Interface() {
         initComponents();
     }
-
+    
+    public static boolean validateName(String input){  //permet de valider que notre string contient au moins une lettre, et que des caractères alphanumériques ou des underscores
+        Pattern pattern = Pattern.compile("\\w*[a-zA-Z]\\w*");  //la regex avec laquelle nous allons comparer le nom rentré par le user
+        Matcher matcher = pattern.matcher(input);  //l'objet qui nous permettera d'effectuer la comparaison
+        return matcher.matches();  //renvoit un boolean si la chaine correspond bien à la regex (true si c'est le cas, false sinon)
+    }
+    
+    public String askName(String player){  //Fonction pour demander au joueur son nom 
+        String inputName = "";
+        String message = player+", entrez votre nom (au moins 1 lettre, chiffres et _ valides)";  //message affiché sur la fenêtre
+        while(!(validateName(inputName))){    //tant que le nom n'est pas valide
+            inputName = JOptionPane.showInputDialog(this, message);   //une fenêtre JOptionPane récupère et renvoit l'input du joueur 
+        }
+        return inputName;   //On renvoit un nom valide
+    }
+    
+            
     public ImageIcon loadImage(String filename) {
-        System.out.println(filename);
         ImageIcon image = null;
         try {
             // Obtenir le chemin de la ressource
-            File imageFile = new File("img/"+filename); // recherche un lien sur notre espace de travail contient le fichier
-            InputStream inputStream = new FileInputStream(imageFile); // contient les infos sous forme binaire du fichier emplacement binaire en 8 en octet
-            image = new ImageIcon(ImageIO.read(inputStream));
-        }catch(Exception e){
+            File imageFile = new File("img/"+filename); //En partant de notre espace de travail (cf fichier build.xml), conserve le lien du fichier cherché 
+            InputStream inputStream = new FileInputStream(imageFile); //Contient les informations sur l'image, forme binaire 
+            image = new ImageIcon(ImageIO.read(inputStream));  //Retransforme les informations de l'objet InputStream en image utilisable 
+        }catch(Exception e){ 
             e.printStackTrace();
         }
         return image;
@@ -46,18 +63,18 @@ public class Interface extends javax.swing.JFrame {
         for (int i = 0; i < 19; i++) { // accès privé mais besoin de l'utiliser
             if (!(t.getTabPontCase(i))) {  //la première case ayant la valeur true (pas encore écroulée)
                 String nomImage = "";
-                int index = i + 1;
-                if (i < 9) {
-                    nomImage = "lave/lave_0" + index + ".gif";
-                } else {
-                    nomImage = "lave/lave_" + index + ".gif";
+
+                if(i<9){
+                    nomImage = String.format("lave/lave_0%d.gif", (i+1));
+                }else{
+                    nomImage = String.format("lave/lave_%d.gif", (i+1));
                 }
-                //On remplace la case par l'image de lave // écroule pont on change directement l'image à la place de vérifier
+                //On remplace la case par l'image de lave // écroule pont on change directement l'image à la place de vérifier 
 
             }
         }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -169,6 +186,10 @@ public class Interface extends javax.swing.JFrame {
     private void startButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startButtonMouseClicked
         
         startButton.setVisible(false);
+        game = true;
+        
+        String test = this.askName("Joueur");
+        System.out.println(test);
         
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(null);
@@ -176,69 +197,36 @@ public class Interface extends javax.swing.JFrame {
         mainPanel.setSize(900,600);
         this.add(mainPanel);
         
-        game = true;
-        Terrain t = new Terrain();
+        
+        Terrain t = new Terrain(); //création du terrain 
         int horizontal = 292;
         int vertical = 500;
-        
-        JPanel pontPanel = new JPanel();
     
         for(int i = 0;i<pontInterface.length;i++){
-
-            String nomImage = "";
-            String nomImageRouge = "";
-            String nomImageVert = "";
-                int index = i + 1;
-                if (i < 9) {
-                    nomImage = "pont/pont_0" + index + ".gif";
-                }else{
-                    nomImage = "pont/pont_" + index + ".gif";
-                } if (i == 5) {
-                    nomImageRouge = "perso/rouge" + index + ".gif";
-                } if (i == 13) {
-                    nomImageVert = "perso/vert" + index + ".gif";
-                }
-                
+            
+            String nomImage;
+            if(i<9){
+                nomImage = String.format("/pont/pont_0%d.gif", (i+1));
+            }else{
+                nomImage = String.format("/pont/pont_%d.gif", (i+1));
+            }
+            
             pontInterface[i] = new JLabel();
             pontInterface[i].setLocation(horizontal, vertical);
             pontInterface[i].setSize(32, 100);
             mainPanel.add(pontInterface[i]);
-            pontInterface[i].setIcon(loadImage(nomImage));  
-            horizontal = horizontal + 32;
-            // Implantation dynamique du sorcier rouge
-            pontInterface[5] = new JLabel();
-            pontInterface[5].setLocation(horizontal, vertical);
-            pontInterface[5].setSize(32, 55);
-            mainPanel.add(pontInterface[5]);
-            positionInterface[j1.getPosition()].setIcon(loadImage(rouge.gif));
-            pont6.setIcon(this.loadImage("perso\\rouge.gif"));
-            vertical = vertical + 54;
-            // Implantation dynamique du sorcier vert
-            pontInterface[13] = new JLabel();
-            pontInterface[13].setLocation(horizontal, vertical);
-            pontInterface[13].setSize(32,55);
-            mainPanel.add(pontInterface[13]);
-            positionInterface[j2.getPosition()].setIcon(loadImage(vert.gif));
-            pont14.setIcon(this.loadImage("perso\\vert.gif"));
-            vertical = vertical + 54;
-            // Implantation dynamique du feu
-            pontInterface[9] = new JLabel();
-            pontInterface[9].setLocation(horizontal, vertical);
-            pontInterface[9].setSize(32,54);
-            mainPanel.add(pontInterface[9]);
-            positionInterface[positionFeu.getPosition()].setIcon(loadImage(feu.gif));
-            pont10.setIcon(this.loadImage("perso\\feu.gif"));
-            vertical = vertical + 54;
+            pontInterface[i].setIcon(loadImage(nomImage));
             
+            horizontal = horizontal + 32;           
         }
         
     }//GEN-LAST:event_startButtonMouseClicked
 
+    
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-
+    public static void main(String args[]) {  
  
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -260,4 +248,6 @@ public class Interface extends javax.swing.JFrame {
     private boolean game = false;
     JLabel[] pontInterface = new JLabel[19];
     JLabel[] positionInterface = new JLabel[19];
-}
+    String[] names = new String[2];
+}  
+
