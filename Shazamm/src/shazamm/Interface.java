@@ -39,8 +39,8 @@ public class Interface extends javax.swing.JFrame {
     public String askName(String player){  //Fonction pour demander au joueur son nom 
         String inputName = "";
         String message = player+", entrez votre nom (au moins 1 lettre, chiffres et _ valides)";  //message affiché sur la fenêtre
-        while(!(validateName(inputName))){    //tant que le nom n'est pas valide
-            inputName = JOptionPane.showInputDialog(this, message);   //une fenêtre JOptionPane récupère et renvoit l'input du joueur 
+        while((inputName==null)||!(validateName(inputName))){    //tant que le nom n'est pas valide
+            inputName = JOptionPane.showInputDialog(this, message, "Demande de nom");   //une fenêtre JOptionPane récupère et renvoit l'input du joueur 
         }
         return inputName;   //On renvoit un nom valide
     }
