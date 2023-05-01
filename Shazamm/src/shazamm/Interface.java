@@ -4,6 +4,7 @@
  */
 package shazamm;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -27,23 +28,8 @@ public class Interface extends javax.swing.JFrame {
     public Interface() {
         initComponents();
     }
-
-    public static boolean validateName(String input) {  //permet de valider que notre string contient au moins une lettre, et que des caractères alphanumériques ou des underscores
-        Pattern pattern = Pattern.compile("\\w*[a-zA-Z]\\w*");  //la regex avec laquelle nous allons comparer le nom rentré par le user
-        Matcher matcher = pattern.matcher(input);  //l'objet qui nous permettera d'effectuer la comparaison
-        return matcher.matches();  //renvoit un boolean si la chaine correspond bien à la regex (true si c'est le cas, false sinon)
-    }
-
-    public String askName(String player) {  //Fonction pour demander au joueur son nom 
-        String inputName = "";
-        String message = player + ", entrez votre nom (au moins 1 lettre, chiffres et _ valides)";  //message affiché sur la fenêtre
-        while ((inputName == null) || !(validateName(inputName))) {    //tant que le nom n'est pas valide ou que le joueur essaye de quitter la fenêtre
-            inputName = JOptionPane.showInputDialog(this, message, "Demande de nom");   //une fenêtre JOptionPane récupère et renvoit l'input du joueur 
-        }
-        return inputName;   //On renvoit un nom valide
-    }
-
-    public ImageIcon loadImage(String filename) {
+    
+    private static ImageIcon loadImage(String filename) {
         ImageIcon image = null;
         try {
             // Obtenir le chemin de la ressource
@@ -55,53 +41,172 @@ public class Interface extends javax.swing.JFrame {
         }
         return image;
     }
+    
+    private void initInterface(JPanel mainPanel, Sorcier j1, Sorcier j2, Terrain t){
+        
+        int horizontal = 292;
+        int verticalPont = 500;
+        int verticalPos = verticalPont - 54;
 
-    public void update_pont(Terrain t) {  //fonction modélisant l'écroulement du pont //on change quand on en a besoin rather vérification  
-        for (int i = 0; i < 19; i++) { // accès privé mais besoin de l'utiliser
-            if (!(t.getTabPontCase(i))) {  //la première case ayant la valeur true (pas encore écroulée)
+        for (int i = 0; i < pontInterface.length; i++) {
+
+            String nomImage;
+            if (i < 9) {
+                nomImage = String.format("/pont/pont_0%d.gif", (i + 1));
+            } else {
+                nomImage = String.format("/pont/pont_%d.gif", (i + 1));
+            }
+
+            pontInterface[i] = new JLabel();
+            pontInterface[i].setLocation(horizontal, verticalPont);
+            pontInterface[i].setSize(32, 100);
+            mainPanel.add(pontInterface[i]);
+            pontInterface[i].setIcon(loadImage(nomImage));
+            
+            positionInterface[i] = new JLabel();
+            positionInterface[i].setLocation(horizontal, verticalPos);
+            positionInterface[i].setSize(32, 55);
+            mainPanel.add(positionInterface[i]);
+
+            horizontal = horizontal + 32;
+        }
+        
+        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); 
+        positionInterface[j1.getPosition()].setIcon(loadImage("perso/rouge.gif"));
+        positionInterface[j2.getPosition()].setIcon(loadImage("perso/vert.gif"));
+        
+    }
+
+
+    private static boolean validateName(String input) {  //permet de valider que notre string contient au moins une lettre, et que des caractères alphanumériques ou des underscores
+        Pattern pattern = Pattern.compile("\\w*[a-zA-Z]\\w*");  //la regex avec laquelle nous allons comparer le nom rentré par le user
+        Matcher matcher = pattern.matcher(input);  //l'objet qui nous permettera d'effectuer la comparaison
+        return matcher.matches();  //renvoit un boolean si la chaine correspond bien à la regex (true si c'est le cas, false sinon)
+    }
+
+    private String askName(String player) {  //Fonction pour demander au joueur son nom 
+        String inputName = "";
+        String message = player + ", entrez votre nom (au moins 1 lettre, chiffres et _ valides)";  //message affiché sur la fenêtre
+        while ((inputName == null) || !(validateName(inputName))) {    //tant que le nom n'est pas valide ou que le joueur essaye de quitter la fenêtre
+            inputName = JOptionPane.showInputDialog(this, message);   //une fenêtre JOptionPane récupère et renvoit l'input du joueur 
+        }
+        return inputName;   //On renvoit un nom valide
+    }
+    
+    private static boolean validateBet(int input, Sorcier player){
+        return (input>1)&&(input <= player.getMana());
+    }
+    
+    private void askBet(Sorcier player){
+        
+        int bet = -1; 
+        String strBet = "";
+        String message = String.format("%s, entrez votre mise (mana restant : %d, mise minimale à 1) :", player.getNom(), player.getMana());
+        
+        while((strBet == null)||(!(validateBet(bet, player)))){
+            try {
+                strBet = JOptionPane.showInputDialog(this, message);
+                bet = Integer.parseInt(strBet);
+            } catch (NumberFormatException e) {
+                bet = -1;
+            }
+        }
+        
+        player.setMise(bet);
+    }
+
+    private void updatePont(Terrain t) {  //fonction modélisant l'écroulement du pont //on change quand on en a besoin rather vérification  
+        for (int i = 0; i < 19; i++) { 
+            if (!(t.getTabPontCase(i))) {  //si la case est écroullée 
                 String nomImage = "";
 
                 if (i < 9) {
                     nomImage = String.format("lave/lave_0%d.gif", (i + 1));
                 } else {
-                    nomImage = String.format("lave/lave_%d.gif", (i + 1));
+                    nomImage = String.format("lave/lave_%d.gif", (i + 1));  //on récupère le nom du fichier de lave à récupérer 
                 }
-                //On remplace la case par l'image de lave // écroule pont on change directement l'image à la place de vérifier 
-
+                //On remplace la case par l'image de lave 
+                pontInterface[i].setIcon(loadImage(nomImage));
             }
         }
     }
-
-    public void devenir_sorcier(Sorcier j1) {
+    
+    private void verifierFinManche(Sorcier j1,Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
+        
         for (int i = 0; i < 19; i++) {
-            String nomImage_Sorcier = "";
-            int mana = 50;
-            Terrain t;
-            if (mana == 0) {
-                nomImage_Sorcier = String.format("perso/rouge.gif", (i = 0));
-                if (j1.getPosition() < t.getPositionFeu()) {  //si le joueur 1 lance le sort 
-                    t.setPositionFeu(j1.getPosition() + 3);
-                    nomImage = String.format("perso/feu.gif" (i);
-                } else if (j1.getPosition() == t.getPositionFeu()){
-                    nomImage_Sorcier = String.format("perso/feu.gif", (i = j1.getPosition()));
-                }
+            final String nomImageFeu = "perso/feu.gif";
+            
+            if((j1.getMana()==0)&&(j2.getMana()==0)){     
                 
-                } else {  //si le joueur 2 lance le sort 
-                    t.setPositionFeu(j1.getPosition() - 3);
-                }
-            if (mana == 0) {
-                nomImage_Sorcier = String.format("perso/vert.gif", (i = 0));
-                if (j2.getPosition() < t.getPositionFeu()) {  //si le joueur 1 lance le sort 
-                    t.setPositionFeu(j1.getPosition() + 3);
-                    nomImage = String.format("perso/feu.gif" (i);
-                } else if (j2.getPosition() == t.getPositionFeu()){
-                    nomImage_Sorcier = String.format("perso/feu.gif", (i = j2.getPosition()));
-                }
+                positionInterface[t.getPositionFeu()].setIcon(null);
+                t.setPositionFeu(j1.getPosition()+3);  //égalité 
+                positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface
+                this.finirManche(j1, j2, t);
                 
-                } else {  //si le joueur 2 lance le sort 
-                    t.setPositionFeu(j1.getPosition() - 3);
+            }else if((j1.getMana() == 0)||(j1.getPosition() >= t.getPositionFeu())) { //j1 perd
+                
+                if(t.getPositionFeu()<j1.getPosition()){
+                    positionInterface[t.getPositionFeu()].setIcon(null);
+                    t.setPositionFeu(j1.getPosition());  //le feu ne dépasse pas le joueur 1
+                    positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
+                    
+                }
+                this.finirManche(j1, j2, t);  //gestion fin de manche
+               
+            }else if ((j2.getMana() == 0)||(t.getPositionFeu()>=j2.getPosition())) {  //j2 perd
+                
+                if (j2.getPosition() < t.getPositionFeu()) {  //le feu ne dépasse pas le j2
+                    positionInterface[t.getPositionFeu()].setIcon(null);
+                    t.setPositionFeu(j2.getPosition());
+                    positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
+                }
+                this.finirManche(j1, j2, t);  //gestion fin de manche
             }
         }
+    }
+        
+    private void finirManche(Sorcier j1, Sorcier j2, Terrain t){  //fonction qui permet d'émuler la fin de la manche
+        
+        String nomImageSorcierJ1 = "perso/rouge.gif";
+        String nomImageSorcierJ2 = "perso/vert.gif";
+        
+        positionInterface[j1.getPosition()].setIcon(null);
+        positionInterface[j2.getPosition()].setIcon(null);
+                
+        j1.setPosition(t.getPositionFeu()-3);
+        j2.setPosition(t.getPositionFeu()+3);  //on repositionne les joueurs 
+                
+        positionInterface[j1.getPosition()].setIcon(loadImage(nomImageSorcierJ1));
+        positionInterface[j2.getPosition()].setIcon(loadImage(nomImageSorcierJ2));  //on repositionne les icones des joueurs sur l'interface
+        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); 
+                
+        j1.setMana(50);
+        j2.setMana(50);  //les joueurs retrouvent leurs points de mana
+                
+        if(!(t.getSort())){
+            t.setSort();   //si le sort mutisme a été lancé, il est levé 
+        }
+                
+        for(int i = 0;i<3;i++){
+            j1.piocher();
+            j2.piocher();
+        }
+                
+        t.ecrouler();
+        this.updatePont(t);
+    }
+    
+    private void verifierFinPartie(Terrain t, Sorcier j1, Sorcier j2){
+        
+        if(!(t.getTabPontCase(j1.getPosition()))){
+            positionInterface[j1.getPosition()].setIcon(null);
+            game = false;
+        }else if(!(t.getTabPontCase(j2.getPosition()))){
+            positionInterface[j2.getPosition()].setIcon(null);
+            game = false;
+        }
+        
+    }
 
         /**
          * This method is called from within the constructor to initialize the
@@ -215,56 +320,53 @@ public class Interface extends javax.swing.JFrame {
 
         startButton.setVisible(false);
         game = true;
-
-        String test = this.askName("Joueur");
-        System.out.println(test);
+        
+        Terrain terrain = new Terrain();
+        
+        String nomJ1 = this.askName("Joueur 1");
+        String nomJ2 = this.askName("Joueur 2");
+        
+        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu()-3);
+        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3);
 
         JPanel mainPanel = new JPanel();
+        
         mainPanel.setLayout(null);
         mainPanel.setLocation(0, 0);
         mainPanel.setSize(900, 600);
         this.add(mainPanel);
-
-        Terrain t = new Terrain(); //création du terrain 
-        int horizontal = 292;
-        int vertical = 500;
-
-        for (int i = 0; i < pontInterface.length; i++) {
-
-            String nomImage;
-            if (i < 9) {
-                nomImage = String.format("/pont/pont_0%d.gif", (i + 1));
-            } else {
-                nomImage = String.format("/pont/pont_%d.gif", (i + 1));
+        mainPanel.setBackground(Color.BLACK);
+        
+        this.initInterface(mainPanel, joueur1, joueur2, terrain);
+        
+        while(this.game){
+            
+            this.askBet(joueur1);
+            this.askBet(joueur2);
+            
+            if(joueur1.getMise()<joueur2.getMise()){
+                positionInterface[terrain.getPositionFeu()].setIcon(null);
+                terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());
+                positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
+            }else if(joueur1.getMise()>joueur2.getMise()){
+                positionInterface[terrain.getPositionFeu()].setIcon(null);
+                terrain.setPositionFeu(terrain.getPositionFeu()+terrain.getNbCaseDeplacement());
+                positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
             }
-
-            pontInterface[i] = new JLabel();
-            pontInterface[i].setLocation(horizontal, vertical);
-            pontInterface[i].setSize(32, 100);
-            mainPanel.add(pontInterface[i]);
-            pontInterface[i].setIcon(loadImage(nomImage));
-
-            horizontal = horizontal + 32;
+            
+            joueur1.setMana(joueur1.getMana()-joueur1.getMise());
+            joueur2.setMana(joueur2.getMana()-joueur2.getMise());
+            
+            this.verifierFinManche(joueur1, joueur2, terrain);
+            
+            this.verifierFinPartie(terrain, joueur1, joueur2);
+                      
         }
-
-        for (int i = 0; i < pontInterface.length; i++) {
-            // Implantation des image de la lave au fur et à mesure que le pont s'écroule
-            String nomImage;
-            if ((i < 9) && !(t.getTabPontCase(i))) {
-                nomImage = String.format("lave/lave_0%d.gif", (i + 1));
-            } else {
-                nomImage = String.format("lave/lave_%d.gif", (i + 1));
-            }
-
-            pontInterface[i] = new JLabel();
-            pontInterface[i].setLocation(horizontal, vertical);
-            pontInterface[i].setSize(32, 93);
-            mainPanel.add(pontInterface[i]);
-            pontInterface[i].setIcon(loadImage(nomImage));
-
-            horizontal = horizontal + 32;
-        }
-
+        
+        this.remove(mainPanel);
+        
+        startButton.setVisible(true);
+        
     }//GEN-LAST:event_startButtonMouseClicked
 
     /**
@@ -292,5 +394,4 @@ public class Interface extends javax.swing.JFrame {
     private boolean game = false;
     JLabel[] pontInterface = new JLabel[19];
     JLabel[] positionInterface = new JLabel[19];
-    String[] names = new String[2];
 }
