@@ -342,20 +342,20 @@ public class Interface extends javax.swing.JFrame {
         while(this.game){
             
             this.askBet(joueur1);
-            this.askBet(joueur2);
-            
-            if(joueur1.getMise()<joueur2.getMise()){
-                positionInterface[terrain.getPositionFeu()].setIcon(null);
-                terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());
+            this.askBet(joueur2);  //ask player how many mana they will bet 
+             
+            if(joueur1.getMise()<joueur2.getMise()){  //define winner 
+                positionInterface[terrain.getPositionFeu()].setIcon(null);  //remove old flame image 
+                terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());  //move fire 
                 positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
-            }else if(joueur1.getMise()>joueur2.getMise()){
+            }else if(joueur1.getMise()>joueur2.getMise()){ 
                 positionInterface[terrain.getPositionFeu()].setIcon(null);
                 terrain.setPositionFeu(terrain.getPositionFeu()+terrain.getNbCaseDeplacement());
                 positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
             }
             
             joueur1.setMana(joueur1.getMana()-joueur1.getMise());
-            joueur2.setMana(joueur2.getMana()-joueur2.getMise());
+            joueur2.setMana(joueur2.getMana()-joueur2.getMise());  //remove bet from total mana 
             
             this.verifierFinManche(joueur1, joueur2, terrain);
             
@@ -363,7 +363,8 @@ public class Interface extends javax.swing.JFrame {
                       
         }
         
-        this.remove(mainPanel);
+        this.remove(mainPanel);  //remove panel to reset game
+        this.repaint();   //update frame
         
         startButton.setVisible(true);
         
