@@ -13,7 +13,8 @@ public class Harpagon extends Carte{
     public Harpagon(){  //constructeur 
         super();  //constructeur classe mère 
         this.name = "Harpagon";
-        this.image = "";
+        this.image = "/cartes/12r.jpg";
+        this.description = "Si je perds ce tour (i.e. si le mur de feu avance effectivement vers moi),\nma mise n’est pas retranchée de ma réserve de Mana.";
     }
     
     @Override

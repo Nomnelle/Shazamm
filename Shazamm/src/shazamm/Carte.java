@@ -12,6 +12,7 @@ public abstract class Carte {
     
     protected String name;  //nom de la carte 
     protected String image;  //image de la carte 
+    protected String description; //description de la carte
     
     public Carte(){  //constructeur 
     }
@@ -23,6 +24,10 @@ public abstract class Carte {
     
     public String getImage(){  //getter 
         return this.image;
+    }
+    
+    public String getDescription(){
+        return this.description;
     }
     
     public abstract void effet(Terrain t, Sorcier j1, Sorcier j2);  //fonction abstraite qui permettra à chaque carte d'avoir un effet propre 

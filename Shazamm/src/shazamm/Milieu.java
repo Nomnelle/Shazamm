@@ -13,7 +13,8 @@ public class Milieu extends Carte{
     public Milieu(){  //constructeur 
         super();  //constructeur classe mère 
         this.name = "Milieu";
-        this.image = "";
+        this.image = "/cartes/05r.jpg";
+        this.description = "Je replace immédiatement le mur de feu à égale distance des deux sorciers.\nLe tour continue ensuite normalement.";
     }
     
     @Override

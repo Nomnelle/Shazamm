@@ -13,7 +13,8 @@ public class Brasier extends Carte{
         public Brasier(){  //constructeur 
         super();  //constructeur classe mère
         this.name = "Brasier";
-        this.image = "";
+        this.image = "/cartes/10r.jpg";
+        this.description = "Le mur de feu se déplace de deux cases au lieu d’une.\nSeulement s’il devait se déplacer, bien sûr.";
     }
     
     @Override

@@ -15,7 +15,8 @@ public class Larcin extends Carte{
     public Larcin(){  //constructeur 
         super();  //constructeur classe mère 
         this.name = "Larcin";
-        this.image = "";
+        this.image = "/cartes/03r.jpg";
+        this.description = "Tous les sorts joués à ce tour sont sous mon contrôle.\nChacun est appliqué comme si je l’avais joué.";
     }
     
     @Override

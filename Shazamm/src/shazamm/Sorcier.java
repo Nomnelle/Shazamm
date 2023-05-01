@@ -78,6 +78,20 @@ public class Sorcier {
         }
     }
     
+    public int getInDeck(String s){
+        int result = -1;
+        for(int i = 0; i<deck.length;i++){
+            if(s.equals(deck[i].name)){
+                result = i;
+            }
+        }
+        return result;
+    }
+    
+    public ArrayList<Integer> getMain(){  //getter
+        return this.main;
+    }
+    
     public ArrayList<Integer> getSortActuel(){  //getter
         return this.sortActuel;
     }
@@ -110,6 +124,15 @@ public class Sorcier {
     
     public void replaceSortActuel(ArrayList<Integer> s){  //setter : remplace le contenu de l'ArrayList des sorts actuels par celui de s 
         this.sortActuel = new ArrayList(s);
+    }
+    
+    public void removeHand(int i){
+        boolean exists = this.main.contains(i);
+        if(exists){
+            int index = this.main.get(i);
+            this.main.remove(index);
+        }
+        
     }
     
     @Override
@@ -154,30 +177,8 @@ public class Sorcier {
     }
     
     public void lancerSort(){  //fonction qui permet au joueur de lancer des sorts 
-        boolean tour = true;
-        Scanner sc = new Scanner(System.in);
-        String answer;
         this.sortPrecedent = new ArrayList(this.sortActuel);  //on met dans l'ArrayList contenant les sorts du tour précédent l'ArrayList des sorts actuels 
-        this.sortActuel.clear();  //On vide l'ArrayList des sorts actuels 
-        while(tour){  //Tant que le joueur n'a pas fini sa sélection 
-            if(this.main.isEmpty()){  //Si le joueur n'a pas de sort à lancer, on le prévient 
-                System.out.println("Vous n'avez plus de sort à jouer.");
-                tour = false;
-            }else{
-                System.out.println("Vous disposez des sorts suivants :");
-                for (int num : this.main) {
-                    System.out.printf("%d. %s\n", num, this.deck[num].getName()); //énumération des sorts disponibles 
-                }
-                System.out.println("Souhaitez vous lancer un sort ? y/n");  //demande au joueur s'il souhaite lancer un sort 
-                answer = sc.nextLine();
-                if(answer.equalsIgnoreCase("y")){  //si le joueur entre "Y" ou "y", on demande au joueur de sélectionner quel sort il souhaite lancer 
-                    this.selectionSort();
-                }else{  //si le joueur entre quoi que ce soit d'autre, fin de la phase psychique 
-                    System.out.println("Fin de votre phase pour lancer les sorts.");  
-                    tour = false;
-                }   
-            }
-        }         
+        this.sortActuel.clear();  //On vide l'ArrayList des sorts actuels       
     }
 
     private void selectionMise(){  //fonction gérant la selection du nombre de point de mana que le joueur va miser 

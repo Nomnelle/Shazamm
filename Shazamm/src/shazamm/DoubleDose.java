@@ -13,7 +13,8 @@ public class DoubleDose extends Carte{
     public DoubleDose(){  //constructeur 
         super();  //constructeur classe mère 
         this.name = "Double Dose";
-        this.image = "";
+        this.image = "/cartes/08r.jpg";
+        this.description = "La puissance de mon attaque est multipliée par deux.";
     }
     
     @Override

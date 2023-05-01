@@ -13,7 +13,8 @@ public class Mutisme extends Carte{
     public Mutisme(){  //constructeur 
         super();  //constructeur classe mère 
         this.name = "Mutisme";
-        this.image = "";
+        this.image = "/cartes/01r.jpg";
+        this.description = "Aucun sort n’a plus d’effet pour les deux joueurs, jusqu’à la fin de la manche. Les autres sorts éventuellement posés sont perdus.";
     }
     
     @Override

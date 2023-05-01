@@ -15,7 +15,8 @@ public class Recyclage extends Carte{
     public Recyclage(){  //constructeur 
         super();  //constructeur classe mère 
         this.name = "Recyclage";
-        this.image = "";
+        this.image = "/cartes/06r.jpg";
+        this.description = "Je peux rectifier ma mise, en ajoutant ou retranchant jusqu’à 5 points de mana.";
     }
     
     @Override

@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
@@ -95,6 +97,61 @@ public class Interface extends javax.swing.JFrame {
     
     private static boolean validateBet(int input, Sorcier player){
         return (input>1)&&(input <= player.getMana());
+    } 
+    
+    private boolean askSpell(){
+        int cast = JOptionPane.showOptionDialog(this, "Voulez-vous lancer un sort ?", "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        if(cast == JOptionPane.NO_OPTION){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    private void selectSpells(Sorcier player){
+        
+        player.lancerSort();
+        ArrayList<Integer> castedSpells = new ArrayList<>();
+        boolean cast = true;
+        boolean help = false;
+        boolean selected = false;
+        String selectedSpellName = "";
+        int spell = -1;
+        
+        while((askSpell())||selectedSpellName==null){
+            
+            ArrayList<String> spellsNamesList = new ArrayList<>();
+        
+            if(player.getMain().isEmpty()){
+                JOptionPane.showMessageDialog(this, "Vous n'avez plus de sort dans votre main...", "Attention", JOptionPane.WARNING_MESSAGE);
+            }else{
+                if(!(selected)){
+                    for(int cards : player.getMain()){
+                        spellsNamesList.add(player.getInDeck(cards).getName());
+                    }
+                    Object[] spellsArr = spellsNamesList.toArray();
+                    String[] spellsNames = Arrays.copyOf(spellsArr, spellsArr.length, String[].class);
+
+                    selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts",  JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
+                    if(selectedSpellName!=null){
+                        spell = player.getInDeck(selectedSpellName);
+                    }
+                if(!help){
+                    int helpChoice = JOptionPane.showOptionDialog(this, "Voulez-vous des informations sur le sort ?", "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aide", "Non", "Annuler"}, null);
+                    switch(helpChoice){
+                    case JOptionPane.YES_OPTION:
+                         JOptionPane.showMessageDialog(this, "Informations sur le sort :\n" + player.getInDeck(spell).getDescription(), player.getInDeck(spell).getName(), JOptionPane.INFORMATION_MESSAGE, loadImage(player.getInDeck(spell).getImage()));
+                        break;
+                        case JOptionPane.NO_OPTION:
+                            castedSpells.add(spell);
+                        }
+                }
+                }    
+            }
+        }
+        
+        player.setSortActuel(castedSpells);
+        
     }
     
     private void askBet(Sorcier player){
@@ -113,22 +170,6 @@ public class Interface extends javax.swing.JFrame {
         }
         
         player.setMise(bet);
-    }
-
-    private void updatePont(Terrain t) {  //fonction modélisant l'écroulement du pont //on change quand on en a besoin rather vérification  
-        for (int i = 0; i < 19; i++) { 
-            if (!(t.getTabPontCase(i))) {  //si la case est écroullée 
-                String nomImage = "";
-
-                if (i < 9) {
-                    nomImage = String.format("lave/lave_0%d.gif", (i + 1));
-                } else {
-                    nomImage = String.format("lave/lave_%d.gif", (i + 1));  //on récupère le nom du fichier de lave à récupérer 
-                }
-                //On remplace la case par l'image de lave 
-                pontInterface[i].setIcon(loadImage(nomImage));
-            }
-        }
     }
     
     private void verifierFinManche(Sorcier j1,Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
@@ -164,6 +205,7 @@ public class Interface extends javax.swing.JFrame {
             }
         }
     }
+    
         
     private void finirManche(Sorcier j1, Sorcier j2, Terrain t){  //fonction qui permet d'émuler la fin de la manche
         
@@ -194,6 +236,22 @@ public class Interface extends javax.swing.JFrame {
                 
         t.ecrouler();
         this.updatePont(t);
+    }
+    
+        private void updatePont(Terrain t) {  //fonction modélisant l'écroulement du pont //on change quand on en a besoin rather vérification  
+        for (int i = 0; i < 19; i++) { 
+            if (!(t.getTabPontCase(i))) {  //si la case est écroullée 
+                String nomImage = "";
+
+                if (i < 9) {
+                    nomImage = String.format("lave/lave_0%d.gif", (i + 1));
+                } else {
+                    nomImage = String.format("lave/lave_%d.gif", (i + 1));  //on récupère le nom du fichier de lave à récupérer 
+                }
+                //On remplace la case par l'image de lave 
+                pontInterface[i].setIcon(loadImage(nomImage));
+            }
+        }
     }
     
     private void verifierFinPartie(Terrain t, Sorcier j1, Sorcier j2){
@@ -374,6 +432,11 @@ public class Interface extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
+        Sorcier test = new Sorcier("Pepito", 0);
+        Interface i = new Interface();
+        i.selectSpells(test);
+        System.out.println(test.getSortActuel());
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
