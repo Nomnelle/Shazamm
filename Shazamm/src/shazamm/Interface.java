@@ -31,7 +31,7 @@ public class Interface extends javax.swing.JFrame {
         initComponents();
     }
     
-    private static ImageIcon loadImage(String filename) {
+    public static ImageIcon loadImage(String filename) {
         ImageIcon image = null;
         try {
             // Obtenir le chemin de la ressource
@@ -122,7 +122,7 @@ public class Interface extends javax.swing.JFrame {
         return cast != JOptionPane.NO_OPTION;
     }
     
-    private String[] formateSpellsName(Sorcier player){  //formate spells names for JOptionPane
+    private static String[] formateSpellsName(Sorcier player){  //formate spells names for JOptionPane
         
         ArrayList<String> spellsNamesList = new ArrayList<>();
         
@@ -163,7 +163,7 @@ public class Interface extends javax.swing.JFrame {
                 break;
             }else{
                 if(!(selected)){  //else, if player hasn't selected a spell yet 
-                    String[] spellsNames = this.formateSpellsName(player);  //we're showing him all of his options
+                    String[] spellsNames = formateSpellsName(player);  //we're showing him all of his options
                     selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts",  JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
                     if(selectedSpellName!=null){  //if player hasn't cancel 
                         spell = player.getInDeck(selectedSpellName);  //spell take the value of the index in deck of the selected spell 
@@ -192,7 +192,7 @@ public class Interface extends javax.swing.JFrame {
                     }
                 }
                 if(needHelp){  //if player watns help, we're showing a Panel with description, image and the name of the spell
-                    JOptionPane.showMessageDialog(this, "Informations sur le sort :\n" + player.getInDeck(spell).getDescription(), player.getInDeck(spell).getName(), JOptionPane.INFORMATION_MESSAGE, this.loadImage(player.getInDeck(spell).getImage()));
+                    JOptionPane.showMessageDialog(this, "Informations sur le sort :\n" + player.getInDeck(spell).getDescription(), player.getInDeck(spell).getName(), JOptionPane.INFORMATION_MESSAGE, loadImage(player.getInDeck(spell).getImage()));
                     needHelp = false;
                 }
                 
@@ -202,6 +202,34 @@ public class Interface extends javax.swing.JFrame {
         
         player.setSortActuel(castedSpells); //adding all selected spells to the casted spells
     }
+    
+    
+    private static void activateSpell(int number, Sorcier j1, Sorcier j2, Terrain t){
+        if(number == 2){
+            if(j1.getSortActuel().contains(number)&&j2.getSortActuel().contains(number)){
+                j1.getInDeck(number).effet(t, j1, j2);
+                j2.setSortActuel(j1.getSortActuel());
+            }else if(j1.getSortActuel().contains(number)){  //Brasier 
+                j1.getInDeck(number).effet(t, j1, j2);
+            }else if(j2.getSortActuel().contains(number)){
+                j2.getInDeck(number).effet(t, j2, j1);
+            }
+        }else if(number == 0||number == 3||number == 4||number == 8||number == 9){
+            if(j1.getSortActuel().contains(number)){  //Brasier 
+                j1.getInDeck(number).effet(t, j1, j2);
+            }else if(j2.getSortActuel().contains(number)){
+                j2.getInDeck(number).effet(t, j2, j1);
+            }
+        }else{
+            if(j1.getSortActuel().contains(number)){  //Clone 
+                j1.getInDeck(number).effet(t, j1, j2);
+            }
+            if(j2.getSortActuel().contains(number)){
+                    j2.getInDeck(number).effet(t, j2, j1);
+            }
+        }
+        
+    } 
     
     private void verifierFinManche(Sorcier j1,Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
         
@@ -236,7 +264,6 @@ public class Interface extends javax.swing.JFrame {
             }
         }
     }
-    
         
     private void finirManche(Sorcier j1, Sorcier j2, Terrain t){  //fonction qui permet d'émuler la fin de la manche
         
@@ -438,18 +465,60 @@ public class Interface extends javax.swing.JFrame {
                 this.selectSpells(joueur2);
             }
             
-            if(joueur1.getMise()<joueur2.getMise()){  //define winner 
+            
+            for(int i = 0; i<10;i++){
+                activateSpell(i, joueur1, joueur2, terrain);
+            }
+            
+            if(joueur1.getMise()<joueur2.getMise()){  //define winner
+                
+                if(joueur1.getSortActuel().contains(10)){  //Si le joueur 1 a Resistance 
+                    joueur1.getInDeck(10).effet(terrain, joueur1, joueur2);
+                }
+                if(joueur1.getSortActuel().contains(11)){  //Si le joueur 1 a Harpagon 
+                    joueur1.getInDeck(11).effet(terrain, joueur1, joueur2);
+                }
+                
                 positionInterface[terrain.getPositionFeu()].setIcon(null);  //remove old flame image 
                 terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());  //move fire 
                 positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
-            }else if(joueur1.getMise()>joueur2.getMise()){ 
+                
+            }else if(joueur1.getMise()>joueur2.getMise()){
+                if(joueur2.getSortActuel().contains(10)){  //si le joueur 2 a Resistance 
+                    joueur2.getInDeck(10).effet(terrain, joueur1, joueur2);
+                }
+                if(joueur2.getSortActuel().contains(11)){  //Si le joueur 2 a Harpagon 
+                    joueur2.getInDeck(11).effet(terrain, joueur1, joueur2);
+                }
                 positionInterface[terrain.getPositionFeu()].setIcon(null);
                 terrain.setPositionFeu(terrain.getPositionFeu()+terrain.getNbCaseDeplacement());
                 positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
             }
             
+            if(terrain.getNbCaseDeplacement()!=1){  //Si le nombre de case de déplacement du feu a été modifié, il est réinitialisé 
+                    terrain.setNbCaseDeplacement(1);
+            }
+            
+            if(joueur1.getSortActuel().contains(7)){  //Si Double Dose a été joué par le j1, on enlève son effet à la mise de base 
+                joueur1.setMise(joueur1.getMise()/2);
+            }
+            if(joueur1.getSortActuel().contains(6)){ //Même chose mais si Boost a été joué 
+                joueur1.setMise(joueur1.getMise()-7);
+            }
+            
+            if(joueur2.getSortActuel().contains(7)){  //Même principe, mais si le j2 a joué Double dose 
+                joueur2.setMise(joueur2.getMise()/2);
+            }
+            if(joueur2.getSortActuel().contains(6)){  //et si le j2 a joué Boost
+                joueur2.setMise(joueur2.getMise()-7);
+            }
+            
             joueur1.setMana(joueur1.getMana()-joueur1.getMise());
             joueur2.setMana(joueur2.getMana()-joueur2.getMise());  //remove bet from total mana 
+            
+            for(int i = 12; i<14;i++){
+                activateSpell(i, joueur1, joueur2, terrain);
+            }
             
             this.verifierFinManche(joueur1, joueur2, terrain);
             

@@ -5,7 +5,8 @@
 package shazamm;
 
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,43 +24,56 @@ public class Clone extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //permet au joueur de lancer un des sorts que son adversaire a joué au tour précédent 
         if(t.getSort()){  //si le joueur peut lancer un sort 
-            boolean tour = true; 
-            if(j2.getSortPrecedent().isEmpty()){  //cas où son adversaire n'a pas lancé de sort 
-                System.out.println("Votre adversaire n'avait pas placé de sort au tour précédent.");
-            }else{
-                System.out.println("Vous pouvez choisir parmis les sorts suivants :");
-                for (int num : j2.getSortPrecedent()) {
-                    System.out.printf("%d. %s\n", num, j2.getInDeck(num).getName());  //énumération des sorts dispos 
-                }
-                System.out.println("Lequel choisissez vous ?");
-                while(tour){  //tant que le joueur fait sa sélection 
-                    tour = this.selectionSort(j1, j2);
+           while(true){
+                boolean needHelp = false;   //player wants to read the help of a spell
+                boolean selected = false;  //player has seleted a spell
+                int spell = -1;
+                String selectedSpellName = "";
+                
+                if(j2.getSortPrecedent().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Votre adversaire n'a pas joué de sort au tour précédent.", "Attention", JOptionPane.WARNING_MESSAGE);
+                    break;
+                }else{
+                    if(!selected){
+                        String[] spellsNames = formateSpellsNames(j2);
+                        selectedSpellName = (String) JOptionPane.showInputDialog(null, "Choisissez un sort parmis ceux joué par l'adversaire au tour précédent.", "Sorts",  JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
+                        if(selectedSpellName!=null){  //if player hasn't cancel 
+                            spell = j1.getInDeck(selectedSpellName);  //spell take the value of the index in deck of the selected spell 
+                            selected = true;
+                        }
+                    }
+                    if((selected)&&(!needHelp)){
+                        int helpChoice = JOptionPane.showOptionDialog(null, "Que souhaitez vous ? (aide ou jouer le sort)", "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aide", "Caster", "Annuler"}, null);
+                        if(helpChoice==JOptionPane.YES_OPTION){ //player wants help 
+                            needHelp = true; 
+                        }else if(helpChoice== JOptionPane.NO_OPTION){
+                            j1.getSortActuel().add(spell);
+                            break;
+                        }else{
+                            selected = false;
+                        }
+                    }
+                    if(needHelp){  //if player watns help, we're showing a Panel with description, image and the name of the spell
+                        JOptionPane.showMessageDialog(null, "Informations sur le sort :\n" + j1.getInDeck(spell).getDescription(), j1.getInDeck(spell).getName(), JOptionPane.INFORMATION_MESSAGE, Interface.loadImage(j1.getInDeck(spell).getImage()));
+                        needHelp = false;
+                    }
                 }
             }
         }
     }
     
-    public boolean selectionSort(Sorcier j1, Sorcier j2){
-        Scanner sc = new Scanner(System.in);
-        int answer;
-        boolean tour;
-        try{  //gestion de l'exception si le joueur entre autre chose q'un int 
-            answer = sc.nextInt();
-            if(j2.getSortPrecedent().contains(answer)){  //si le joueur adverse a bien joué le sort demandé 
-                ArrayList<Integer> tmp = new ArrayList<>();  //on le rajoute à la liste des sorts du joueur 
-                tmp.add(answer);
-                j1.setSortActuel(tmp);
-                System.out.printf("Vous avez choisi le sort %s.", j2.getInDeck(answer).getName());
-                tour = false;  //fin du tour
-            }else{  //sinon
-                System.out.println("Votre adversaire n'avait pas joué ce sort.");
-                tour = true; //la sélection recommence 
-            }
-        }catch(java.util.InputMismatchException e){  //si le joueur n'a pas rentré un int
-            System.out.println("Entrée non valide.");
-            tour = true;  //la sélection recommence 
+    private static String[] formateSpellsNames(Sorcier player){  //formate spells names for JOptionPane
+        
+        ArrayList<String> spellsNamesList = new ArrayList<>();
+        
+        for(int cards : player.getSortPrecedent()){
+            spellsNamesList.add(player.getInDeck(cards).getName());
         }
-        return tour;       
+                    
+        Object[] spellsArr = spellsNamesList.toArray();
+        String[] spellsNames = Arrays.copyOf(spellsArr, spellsArr.length, String[].class);
+        
+        return spellsNames;
+        
     }
-    
 }
