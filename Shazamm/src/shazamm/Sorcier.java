@@ -129,7 +129,7 @@ public class Sorcier {
     public void removeHand(int i){
         boolean exists = this.main.contains(i);
         if(exists){
-            int index = this.main.get(i);
+            int index = this.main.indexOf(i);
             this.main.remove(index);
         }
         

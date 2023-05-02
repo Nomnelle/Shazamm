@@ -96,63 +96,8 @@ public class Interface extends javax.swing.JFrame {
     }
     
     private static boolean validateBet(int input, Sorcier player){
-        return (input>1)&&(input <= player.getMana());
+        return (input>0)&&(input <= player.getMana());
     } 
-    
-    private boolean askSpell(){
-        int cast = JOptionPane.showOptionDialog(this, "Voulez-vous lancer un sort ?", "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-        if(cast == JOptionPane.NO_OPTION){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    private void selectSpells(Sorcier player){
-        
-        player.lancerSort();
-        ArrayList<Integer> castedSpells = new ArrayList<>();
-        boolean cast = true;
-        boolean help = false;
-        boolean selected = false;
-        String selectedSpellName = "";
-        int spell = -1;
-        
-        while((askSpell())||selectedSpellName==null){
-            
-            ArrayList<String> spellsNamesList = new ArrayList<>();
-        
-            if(player.getMain().isEmpty()){
-                JOptionPane.showMessageDialog(this, "Vous n'avez plus de sort dans votre main...", "Attention", JOptionPane.WARNING_MESSAGE);
-            }else{
-                if(!(selected)){
-                    for(int cards : player.getMain()){
-                        spellsNamesList.add(player.getInDeck(cards).getName());
-                    }
-                    Object[] spellsArr = spellsNamesList.toArray();
-                    String[] spellsNames = Arrays.copyOf(spellsArr, spellsArr.length, String[].class);
-
-                    selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts",  JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
-                    if(selectedSpellName!=null){
-                        spell = player.getInDeck(selectedSpellName);
-                    }
-                if(!help){
-                    int helpChoice = JOptionPane.showOptionDialog(this, "Voulez-vous des informations sur le sort ?", "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aide", "Non", "Annuler"}, null);
-                    switch(helpChoice){
-                    case JOptionPane.YES_OPTION:
-                         JOptionPane.showMessageDialog(this, "Informations sur le sort :\n" + player.getInDeck(spell).getDescription(), player.getInDeck(spell).getName(), JOptionPane.INFORMATION_MESSAGE, loadImage(player.getInDeck(spell).getImage()));
-                        break;
-                        case JOptionPane.NO_OPTION:
-                            castedSpells.add(spell);
-                        }
-                }
-                }    
-            }
-        }
-        
-        player.setSortActuel(castedSpells);
-        
-    }
     
     private void askBet(Sorcier player){
         
@@ -168,8 +113,94 @@ public class Interface extends javax.swing.JFrame {
                 bet = -1;
             }
         }
-        
         player.setMise(bet);
+    }
+           
+    private boolean askSpell(Sorcier player){  //JOptionPane to ask player if he wants to cast spells
+        String message = String.format("%s, voulez-vous lancer un sort ?", player.getNom());
+        int cast = JOptionPane.showOptionDialog(this, message, "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        return cast != JOptionPane.NO_OPTION;
+    }
+    
+    private String[] formateSpellsName(Sorcier player){  //formate spells names for JOptionPane
+        
+        ArrayList<String> spellsNamesList = new ArrayList<>();
+        
+        for(int cards : player.getMain()){
+            spellsNamesList.add(player.getInDeck(cards).getName());
+        }
+                    
+        Object[] spellsArr = spellsNamesList.toArray();
+        String[] spellsNames = Arrays.copyOf(spellsArr, spellsArr.length, String[].class);
+        
+        return spellsNames;
+        
+    }
+ 
+    private void selectSpells(Sorcier player){ //let player choose the spells he wants to cast
+        
+        player.lancerSort(); 
+        ArrayList<Integer> castedSpells = new ArrayList<>();  //selected spells 
+        boolean cast = false;  //player wants to cast a spell
+        boolean needHelp = false;   //player wants to read the help of a spell
+        boolean selected = false;  //player has seleted a spell
+        
+        while(true){
+            
+            int spell = -1;
+            String selectedSpellName = "";
+               
+            if(!cast){  //if player hasn't choose to cast a spell 
+                if(!(this.askSpell(player))){
+                    break;  //if player dosen't want to cast a spell, exit loop 
+                }else{
+                    cast = true;  //else, moving on to the next JOptionPane 
+                }
+            }
+            
+            if(player.getMain().isEmpty()){  //if player already used all of his spells, we're telling him and we exit loop
+                JOptionPane.showMessageDialog(this, "Vous n'avez plus de sort dans votre main...", "Attention", JOptionPane.WARNING_MESSAGE);
+                break;
+            }else{
+                if(!(selected)){  //else, if player hasn't selected a spell yet 
+                    String[] spellsNames = this.formateSpellsName(player);  //we're showing him all of his options
+                    selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts",  JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
+                    if(selectedSpellName!=null){  //if player hasn't cancel 
+                        spell = player.getInDeck(selectedSpellName);  //spell take the value of the index in deck of the selected spell 
+                        selected = true;
+                    }else{
+                        cast = false;
+                    }
+                }
+                
+                if((!needHelp)&&(selected)){  //if player has selected a spell and has not choose if he wants help about it 
+                    int helpChoice = JOptionPane.showOptionDialog(this, "Que souhaitez vous ? (aide ou jouer le sort)", "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aide", "Caster", "Annuler"}, null);
+                    switch(helpChoice){
+                    case JOptionPane.YES_OPTION: //player wants help 
+                        needHelp = true; 
+                        break;
+                    case JOptionPane.NO_OPTION:  //we're going back to the first Panel  
+                        castedSpells.add(spell); //we're adding selected spell to list
+                        player.removeHand(spell); //we're removing selected spell from hand
+                        selected = false;
+                        cast = false;
+                        break;
+                    default:
+                        selected = false;
+                        cast = false;
+                        break;
+                    }
+                }
+                if(needHelp){  //if player watns help, we're showing a Panel with description, image and the name of the spell
+                    JOptionPane.showMessageDialog(this, "Informations sur le sort :\n" + player.getInDeck(spell).getDescription(), player.getInDeck(spell).getName(), JOptionPane.INFORMATION_MESSAGE, this.loadImage(player.getInDeck(spell).getImage()));
+                    needHelp = false;
+                }
+                
+                
+            }    
+        }
+        
+        player.setSortActuel(castedSpells); //adding all selected spells to the casted spells
     }
     
     private void verifierFinManche(Sorcier j1,Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
@@ -401,7 +432,12 @@ public class Interface extends javax.swing.JFrame {
             
             this.askBet(joueur1);
             this.askBet(joueur2);  //ask player how many mana they will bet 
-             
+            
+            if(terrain.getSort()){
+                this.selectSpells(joueur1);
+                this.selectSpells(joueur2);
+            }
+            
             if(joueur1.getMise()<joueur2.getMise()){  //define winner 
                 positionInterface[terrain.getPositionFeu()].setIcon(null);  //remove old flame image 
                 terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());  //move fire 
@@ -433,11 +469,6 @@ public class Interface extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         
-        Sorcier test = new Sorcier("Pepito", 0);
-        Interface i = new Interface();
-        i.selectSpells(test);
-        System.out.println(test.getSortActuel());
-
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Interface().setVisible(true);
