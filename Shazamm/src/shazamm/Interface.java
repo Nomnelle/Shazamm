@@ -80,7 +80,7 @@ public class Interface extends javax.swing.JFrame {
     }
 
 
-    private static boolean validateName(String input) {  //permet de valider que notre string contient au moins une lettre, et que des caractères alphanumériques ou des underscores
+    public static boolean validateName(String input) {  //permet de valider que notre string contient au moins une lettre, et que des caractères alphanumériques ou des underscores
         Pattern pattern = Pattern.compile("\\w*[a-zA-Z]\\w*");  //la regex avec laquelle nous allons comparer le nom rentré par le user
         Matcher matcher = pattern.matcher(input);  //l'objet qui nous permettera d'effectuer la comparaison
         return matcher.matches();  //renvoit un boolean si la chaine correspond bien à la regex (true si c'est le cas, false sinon)
@@ -95,7 +95,7 @@ public class Interface extends javax.swing.JFrame {
         return inputName;   //On renvoit un nom valide
     }
     
-    private static boolean validateBet(int input, Sorcier player){
+    public static boolean validateBet(int input, Sorcier player){
         return (input>0)&&(input <= player.getMana());
     } 
     
@@ -122,7 +122,7 @@ public class Interface extends javax.swing.JFrame {
         return cast != JOptionPane.NO_OPTION;
     }
     
-    private static String[] formateSpellsName(Sorcier player){  //formate spells names for JOptionPane
+    public static String[] formateSpellsName(Sorcier player){  //formate spells names for JOptionPane
         
         ArrayList<String> spellsNamesList = new ArrayList<>();
         
@@ -204,7 +204,7 @@ public class Interface extends javax.swing.JFrame {
     }
     
     
-    private static void activateSpell(int number, Sorcier j1, Sorcier j2, Terrain t){
+    public static void activateSpell(int number, Sorcier j1, Sorcier j2, Terrain t){
         if(number == 2){
             if(j1.getSortActuel().contains(number)&&j2.getSortActuel().contains(number)){
                 j1.getInDeck(number).effet(t, j1, j2);
@@ -231,38 +231,40 @@ public class Interface extends javax.swing.JFrame {
         
     } 
     
-    private void verifierFinManche(Sorcier j1,Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
+    private boolean verifierFinManche(Sorcier j1,Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
         
-        for (int i = 0; i < 19; i++) {
-            final String nomImageFeu = "perso/feu.gif";
+        final String nomImageFeu = "perso/feu.gif";
             
-            if((j1.getMana()==0)&&(j2.getMana()==0)){     
+        if((j1.getMana()==0)&&(j2.getMana()==0)){     
                 
+            positionInterface[t.getPositionFeu()].setIcon(null);
+            t.setPositionFeu(j1.getPosition()+3);  //égalité 
+            positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface
+            this.finirManche(j1, j2, t);
+            return true;
+                
+        }else if((j1.getMana() == 0)||(j1.getPosition() >= t.getPositionFeu())) { //j1 perd
+                
+            if(t.getPositionFeu()<j1.getPosition()){
                 positionInterface[t.getPositionFeu()].setIcon(null);
-                t.setPositionFeu(j1.getPosition()+3);  //égalité 
-                positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface
-                this.finirManche(j1, j2, t);
-                
-            }else if((j1.getMana() == 0)||(j1.getPosition() >= t.getPositionFeu())) { //j1 perd
-                
-                if(t.getPositionFeu()<j1.getPosition()){
-                    positionInterface[t.getPositionFeu()].setIcon(null);
-                    t.setPositionFeu(j1.getPosition());  //le feu ne dépasse pas le joueur 1
-                    positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
+                t.setPositionFeu(j1.getPosition());  //le feu ne dépasse pas le joueur 1
+                positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
                     
-                }
-                this.finirManche(j1, j2, t);  //gestion fin de manche
-               
-            }else if ((j2.getMana() == 0)||(t.getPositionFeu()>=j2.getPosition())) {  //j2 perd
-                
-                if (j2.getPosition() < t.getPositionFeu()) {  //le feu ne dépasse pas le j2
-                    positionInterface[t.getPositionFeu()].setIcon(null);
-                    t.setPositionFeu(j2.getPosition());
-                    positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
-                }
-                this.finirManche(j1, j2, t);  //gestion fin de manche
             }
+            this.finirManche(j1, j2, t);  //gestion fin de manche
+            return true;
+               
+        }else if ((j2.getMana() == 0)||(t.getPositionFeu()>=j2.getPosition())) {  //j2 perd
+                
+            if (j2.getPosition() < t.getPositionFeu()) {  //le feu ne dépasse pas le j2
+                positionInterface[t.getPositionFeu()].setIcon(null);
+                t.setPositionFeu(j2.getPosition());
+                positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
+            }
+            this.finirManche(j1, j2, t);  //gestion fin de manche
+            return true; 
         }
+        return false;
     }
         
     private void finirManche(Sorcier j1, Sorcier j2, Terrain t){  //fonction qui permet d'émuler la fin de la manche
@@ -293,6 +295,21 @@ public class Interface extends javax.swing.JFrame {
         }
                 
         t.ecrouler();
+        this.updatePont(t);
+    }
+    
+    private void updateInterfaceManche(Sorcier j1, Sorcier j2, Terrain t, int oldPosJ1, int oldPosJ2){  //fonction qui permet d'émuler la fin de la manche
+        
+        String nomImageSorcierJ1 = "perso/rouge.gif";
+        String nomImageSorcierJ2 = "perso/vert.gif";
+        
+        positionInterface[oldPosJ1].setIcon(null);
+        positionInterface[oldPosJ2].setIcon(null);
+                
+        positionInterface[j1.getPosition()].setIcon(loadImage(nomImageSorcierJ1));
+        positionInterface[j2.getPosition()].setIcon(loadImage(nomImageSorcierJ2));  //on repositionne les icones des joueurs sur l'interface
+        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); 
+
         this.updatePont(t);
     }
     
@@ -335,6 +352,7 @@ public class Interface extends javax.swing.JFrame {
 
         popup = new javax.swing.JFrame();
         startButton = new javax.swing.JButton();
+        multipleWindowsButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         new_game = new javax.swing.JMenuItem();
@@ -362,6 +380,18 @@ public class Interface extends javax.swing.JFrame {
         startButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 startButtonMouseClicked(evt);
+            }
+        });
+
+        multipleWindowsButton.setText("Jouer (plusieurs écrans)");
+        multipleWindowsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                multipleWindowsButtonMouseClicked(evt);
+            }
+        });
+        multipleWindowsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                multipleWindowsButtonActionPerformed(evt);
             }
         });
 
@@ -403,21 +433,24 @@ public class Interface extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 900, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(startButton)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(412, 412, 412)
+                        .addComponent(startButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(355, 355, 355)
+                        .addComponent(multipleWindowsButton)))
+                .addContainerGap(357, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 575, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(startButton)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(241, 241, 241)
+                .addComponent(startButton)
+                .addGap(54, 54, 54)
+                .addComponent(multipleWindowsButton)
+                .addContainerGap(232, Short.MAX_VALUE))
         );
 
         pack();
@@ -435,6 +468,8 @@ public class Interface extends javax.swing.JFrame {
     private void startButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startButtonMouseClicked
 
         startButton.setVisible(false);
+        multipleWindowsButton.setVisible(false);
+        
         game = true;
         
         Terrain terrain = new Terrain();
@@ -530,8 +565,147 @@ public class Interface extends javax.swing.JFrame {
         this.repaint();   //update frame
         
         startButton.setVisible(true);
+        multipleWindowsButton.setVisible(true);
         
     }//GEN-LAST:event_startButtonMouseClicked
+
+    private void multipleWindowsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multipleWindowsButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_multipleWindowsButtonActionPerformed
+
+    private void multipleWindowsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_multipleWindowsButtonMouseClicked
+        
+        this.startButton.setVisible(false);
+        this.multipleWindowsButton.setVisible(false);
+        
+        Interface j2Wind = new Interface();
+        
+        j2Wind .startButton.setVisible(false);
+        j2Wind .multipleWindowsButton.setVisible(false);
+        j2Wind.setVisible(true);
+        
+        this.game = true;
+        
+        Terrain terrain = new Terrain();
+
+        j2Wind.setVisible(true);
+        
+        String nomJ1 = this.askName("Joueur 1");
+        String nomJ2 = j2Wind.askName("Joueur 2");
+        
+        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu()-3);
+        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3);
+        
+        JPanel mainPanel = new JPanel();
+        JPanel secondaryPanel = new JPanel();
+        
+        mainPanel.setLayout(null);
+        mainPanel.setLocation(0, 0);
+        mainPanel.setSize(900, 600);
+        this.add(mainPanel);
+        mainPanel.setBackground(Color.BLACK);
+        
+        secondaryPanel.setLayout(null);
+        secondaryPanel.setLocation(0,0);
+        secondaryPanel.setSize(900, 600);
+        j2Wind.add(secondaryPanel);
+        secondaryPanel.setBackground(Color.BLACK);
+        
+        
+        this.initInterface(mainPanel, joueur1, joueur2, terrain);
+        j2Wind.initInterface(secondaryPanel, joueur1, joueur2, terrain);
+
+        
+        while(this.game){
+            
+            this.askBet(joueur1);
+            j2Wind.askBet(joueur2);  //ask player how many mana they will bet 
+            
+            if(terrain.getSort()){
+                this.selectSpells(joueur1);
+                j2Wind.selectSpells(joueur2);
+            }
+            
+            
+            for(int i = 0; i<10;i++){
+                activateSpell(i, joueur1, joueur2, terrain);
+            }
+            
+            if(joueur1.getMise()<joueur2.getMise()){  //define winner
+                
+                if(joueur1.getSortActuel().contains(10)){  //Si le joueur 1 a Resistance 
+                    joueur1.getInDeck(10).effet(terrain, joueur1, joueur2);
+                }
+                if(joueur1.getSortActuel().contains(11)){  //Si le joueur 1 a Harpagon 
+                    joueur1.getInDeck(11).effet(terrain, joueur1, joueur2);
+                }
+                
+                this.positionInterface[terrain.getPositionFeu()].setIcon(null);  //remove old flame image
+                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(null);
+                terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());  //move fire 
+                this.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
+                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif"));
+                
+            }else if(joueur1.getMise()>joueur2.getMise()){
+                if(joueur2.getSortActuel().contains(10)){  //si le joueur 2 a Resistance 
+                    joueur2.getInDeck(10).effet(terrain, joueur1, joueur2);
+                }
+                if(joueur2.getSortActuel().contains(11)){  //Si le joueur 2 a Harpagon 
+                    joueur2.getInDeck(11).effet(terrain, joueur1, joueur2);
+                }
+                this.positionInterface[terrain.getPositionFeu()].setIcon(null);
+                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(null);
+                terrain.setPositionFeu(terrain.getPositionFeu()+terrain.getNbCaseDeplacement());
+                this.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
+                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif"));
+            }
+            
+            if(terrain.getNbCaseDeplacement()!=1){  //Si le nombre de case de déplacement du feu a été modifié, il est réinitialisé 
+                    terrain.setNbCaseDeplacement(1);
+            }
+            
+            if(joueur1.getSortActuel().contains(7)){  //Si Double Dose a été joué par le j1, on enlève son effet à la mise de base 
+                joueur1.setMise(joueur1.getMise()/2);
+            }
+            if(joueur1.getSortActuel().contains(6)){ //Même chose mais si Boost a été joué 
+                joueur1.setMise(joueur1.getMise()-7);
+            }
+            
+            if(joueur2.getSortActuel().contains(7)){  //Même principe, mais si le j2 a joué Double dose 
+                joueur2.setMise(joueur2.getMise()/2);
+            }
+            if(joueur2.getSortActuel().contains(6)){  //et si le j2 a joué Boost
+                joueur2.setMise(joueur2.getMise()-7);
+            }
+            
+            joueur1.setMana(joueur1.getMana()-joueur1.getMise());
+            joueur2.setMana(joueur2.getMana()-joueur2.getMise());  //remove bet from total mana 
+            
+            for(int i = 12; i<14;i++){
+                activateSpell(i, joueur1, joueur2, terrain);
+            }
+            
+            int oldPosJ1 = joueur1.getPosition();
+            int oldPosJ2 = joueur2.getPosition();
+            boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
+            if(finManche){
+                j2Wind.updateInterfaceManche(joueur1, joueur2, terrain, oldPosJ1, oldPosJ2);
+            }
+            
+            this.verifierFinPartie(terrain, joueur1, joueur2);
+            
+            secondaryPanel.repaint();
+                      
+        }
+        
+        j2Wind.dispose();
+        
+        this.remove(mainPanel);  //remove panel to reset game
+        this.repaint();   //update frame
+        
+        startButton.setVisible(true);
+        multipleWindowsButton.setVisible(true);
+    }//GEN-LAST:event_multipleWindowsButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -550,6 +724,7 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JMenu help;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JButton multipleWindowsButton;
     private javax.swing.JMenuItem new_game;
     private javax.swing.JFrame popup;
     private javax.swing.JMenuItem quit;

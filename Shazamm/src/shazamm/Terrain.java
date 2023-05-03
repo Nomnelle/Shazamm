@@ -19,7 +19,7 @@ public class Terrain {
     
     public Terrain(){  //constructeur 
         this.nbCaseDeplacement = 1;
-        this.positionFeu = 10;
+        this.positionFeu = 9;
         this.sort = true; 
         tabPont = new boolean[19];  //initialisation 
         Arrays.fill(tabPont, true);  //toutes les cases du pont sont présentes 
