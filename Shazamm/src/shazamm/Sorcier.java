@@ -20,13 +20,15 @@ public class Sorcier {
     private ArrayList<Integer> sortActuel; //sorts lancés par le joueur durant le tour en cours
     private ArrayList<Integer> sortPrecedent; //sorts lancés par le joueur durant le tour précédent 
     private int position; //position du sorcier sur le pont in-game 
+    private String couleur;
     private int mana; //nombre de points de mana disponibles 
     private int mise; //nombre de points de mana misés à ce tour 
 
-    public Sorcier(String n, int p){ //constructeur : prend en paramètre un nom, et la position du sorcier au début de la game 
+    public Sorcier(String n, int p, String c){ //constructeur : prend en paramètre un nom, et la position du sorcier au début de la game 
         
         this.nom = n;
         this.position = p;
+        this.couleur = c;
         this.mana = 50;  //nombre initial de points de mana 
         this.deck = new Carte[14];  //initialisation du tableau représentant les sorts dispos
         this.mise = 1;  //initialisation de la mise à sa valeur la plus basse 
@@ -62,6 +64,10 @@ public class Sorcier {
     
     public int getPosition(){ //getter
         return this.position;
+    }
+    
+    public String getCouleur() {
+        return this.couleur;
     }
     
     public int getMise(){ //getter

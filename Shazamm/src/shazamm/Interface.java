@@ -33,27 +33,55 @@ public class Interface extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void changerCouleurPolice() {
+    public void changerCouleurPolice(Sorcier player, JLabel suiviJeu) {
+ 
+        String couleur = player.getCouleur();
+                
+        switch(couleur) {
+            case "rouge":
+                player.getCouleur();
+                suiviJeu.setForeground(Color.RED);
+                break;
+            case "vert":
+                player.getCouleur();
+                suiviJeu.setForeground(Color.GREEN);
+                break;
+            default:
+                suiviJeu.setForeground(Color.BLACK);
+                break;
+        }
 
-        joueur1.setForeground(Color.RED);
-        joueur2.setForeground(Color.GREEN);
-        miseJ1.setForeground(Color.RED);
-        miseJ2.setForeground(Color.GREEN);
-        sortJ1.setForeground(Color.RED);
-        sortJ2.setForeground(Color.GREEN);
-        j1.setForeground(Color.RED);
-        nbManaAvantJ1.setForeground(Color.RED);
-        j1Mise.setForeground(Color.RED);
-        forceAttaqueJ1.setForeground(Color.RED);
-        perteManaJ1.setForeground(Color.RED);
-        nbManaRestantJ1.setForeground(Color.RED);
-        j2.setForeground(Color.GREEN);
-        nbManaAvantJ2.setForeground(Color.GREEN);
-        j2Mise.setForeground(Color.GREEN);
-        forceAttaqueJ2.setForeground(Color.GREEN);
-        perteManaJ2.setForeground(Color.GREEN);
-        nbManaRestantJ2.setForeground(Color.GREEN);
-
+    }
+    
+    private void initHistorique(JPanel historique, int tour, int manche) {
+        // Affiche le numero des tours, pour initialiser l'historique
+        JLabel info = new JLabel();
+        String message = String.format("manche %d tour %d", manche, tour);
+        info.setText(message);
+        historique.removeAll();
+        historique.repaint();       
+        historique.add(info);
+  
+    }
+    
+    private void afficherMise(JPanel historique, Sorcier player) { // ira en-dessous lorsque les joueurs ont choisi les sorts
+        
+        JLabel info = new JLabel();
+        String message = String.format("%s a misé %d", player.getNom(), player.getMise());
+        info.setText(message);
+        changerCouleurPolice(player, info);
+        historique.add(info);
+        
+    }
+    
+    private void afficherSort(JPanel historique, Sorcier player, int number) { // ira dans activateSpell
+        
+        JLabel info = new JLabel();
+        String message = String.format("Le sort %s de %s s'active", player.getInDeck(number).getName(), player.getNom());
+        info.setText(message);
+        changerCouleurPolice(player, info);
+        historique.add(info);
+        
     }
 
     public void afficherHeureDate() {
@@ -99,349 +127,6 @@ public class Interface extends javax.swing.JFrame {
 
     }
 
-    private int attaquerHistorique(Sorcier player1, Sorcier player2, int i) {
-        if (player1.getMise() > 0) {
-             && (this.deck[6]
-        
-        }
-        getInDeck(int i) && (this.deck[7]
-        getInDeck(int i
-        
-        
-            )) {
-            this.askBet(player1);
-            player1.getMise();
-
-            try {
-                forceAttaqueJ1.setText(player1.setMise((player1.getMise() + 7) + (player1.getMise() * 2)));
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-
-        }
-        if  {
-            else (player1.getMise() > 0) && (this.deck[6]
-        
-        }
-        getInDeck(int i
-        
-        
-            ) {
-            
-            try {
-                forceAttaqueJ1.setMise(player1.getMise() + 7);
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-        }
-        if  {
-            else (player1.getMise() > 0) && (this.deck[7]
-        
-        }
-        getInDeck(int i
-        
-        
-            )) {
-        
-            try {
-                forceAttaqueJ1.setMise(player1.getMise() * 2)
-             );
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-
-        }
-        if (player1.getMise() > 0) {
-             && (this.deck[6]
-        
-        }
-        getInDeck(int i) && (this.deck[7]
-        getInDeck(int i
-        
-        
-            )) {
-            this.askBet(player1);
-            player1.getMise();
-
-            try {
-                forceAttaqueJ1.setText(player1.setMise((player1.getMise() + 7) + (player1.getMise() * 2)));
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-
-        }
-        if  {
-            else (player1.getMise() > 0) && (this.deck[6]
-        
-        }
-        getInDeck(int i
-        
-        
-            ) {
-            
-            try {
-                forceAttaqueJ1.setMise(player1.getMise() + 7);
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-        }
-        if  {
-            else (player1.getMise() > 0) && (this.deck[7]
-        
-        }
-        getInDeck(int i
-        
-        
-            )) {
-        
-            try {
-                forceAttaqueJ1.setMise(player1.getMise() * 2)
-             );
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-
-        }
-        if (player1.getMise() > 0) {
-             && (this.deck[6]
-        
-        }
-        getInDeck(int i) && (this.deck[7]
-        getInDeck(int i
-        
-        
-            )) {
-            this.askBet(player1);
-            player1.getMise();
-
-            try {
-                forceAttaqueJ1.setText(player1.setMise((player1.getMise() + 7) + (player1.getMise() * 2)));
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-
-        }
-        if  {
-            else (player1.getMise() > 0) && (this.deck[6]
-        
-        }
-        getInDeck(int i
-        
-        
-            ) {
-            
-            try {
-                forceAttaqueJ1.setMise(player1.getMise() + 7);
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-        }
-        if  {
-            else (player1.getMise() > 0) && (this.deck[7]
-        
-        }
-        getInDeck(int i
-        
-        
-            )) {
-        
-            try {
-                forceAttaqueJ1.setMise(player1.getMise() * 2)
-             );
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ1.setText("-1");
-            }
-
-        }
-        if  {
-            else (player2.getMise() > 0) && (this.deck[6]
-        
-        }
-        getInDeck(int i) && (this.deck[7]
-        getInDeck(int i
-        
-        
-            )) {
-            this.askBet(player2);
-            player2.getMise();
-
-            try {
-                forceAttaqueJ2.setText(player2.setMise((player2.getMise() + 7) + (player2.getMise() * 2)));
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ2.setText("-1");
-            }
-
-        }
-        if  {
-            else (player2.getMise() > 0) && (this.deck[6]
-        
-        }
-        getInDeck(int i
-        
-        
-            ) {
-            
-            try {
-                forceAttaqueJ2.setMise(player2.getMise() + 7);
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ2.setText("-1");
-            }
-        }
-        if  {
-            else (player2.getMise() > 0) && (this.deck[7]
-        
-        }
-        getInDeck(int i
-        
-        
-            )) {
-        
-            try {
-                forceAttaqueJ2.setMise(player2.getMise() * 2)
-             );
-            } catch (NumberFormatException nfe) {
-                forceAttaqueJ2.setText("-1");
-            }
-
-        }
-
-        return i;
-
-    }
-
-    private void devenirManaHistorique(int input, Sorcier player1, Sorcier player2) {
-        // Affiche le nombre de mana des joueurs avant la mise dans l'historique
-        if ((player1.getMise() == 0) && (input <= player1.getMana()) || (player2.getMise() == 0) && (input <= player2.getMana())) {
-
-            try {
-                nbManaAvantJ1.setText(Integer.toString(player1.getMana()));
-            } catch (NumberFormatException nfe) {
-                nbManaAvantJ1.setText("-1");
-            }
-            try {
-                nbManaAvantJ2.setText(Integer.toString(player2.getMana()));
-            } catch (NumberFormatException nfe) {
-                nbManaAvantJ2.setText("-1");
-            }
-
-            // Affiche la valeur de la mise dans l'historique
-        } else if ((player1.getMise() > 0) && (input <= player1.getMana()) || (player2.getMise() == 0) && (input <= player2.getMana())) {
-
-            try {
-                j1Mise.setText(Integer.toString(player1.getMana()));
-            } catch (NumberFormatException nfe) {
-                j1Mise.setText("-1");
-            }
-            try {
-
-                j2Mise.setText(Integer.toString(player1.getMana()));
-            } catch (NumberFormatException nfe) {
-                j2Mise.setText("-1");
-            }
-
-            try { // Affiche la perte de mana dans l'historique
-                player1.setMana(player1.getMana() - player1.getMise());
-                perteManaJ1.setText(Integer.toString(player1.getMana()));
-
-            } catch (NumberFormatException nfe) {
-                perteManaJ1.setText("-1");
-            }
-
-            try {
-                player2.setMana(player2.getMana() - player2.getMise());
-                perteManaJ2.setText(Integer.toString(player2.getMana()));
-
-            } catch (NumberFormatException nfe) {
-                perteManaJ2.setText("-1");
-            }
-
-        }
-    }
-
-    public int CalculerNbPartie(Sorcier j1, Sorcier j2, Terrain t) {
-        int p = 0;
-
-        if (!(t.getTabPontCase(j1.getPosition()))) {
-            positionInterface[j1.getPosition()].setIcon(null);
-            game = false;
-            p = p++;
-
-            try {
-                numeroPartie.setText(Integer.toString(p));
-            } catch (NumberFormatException nfe) {
-                numeroPartie.setText("0");
-            }
-
-        } else if (!(t.getTabPontCase(j2.getPosition()))) {
-            positionInterface[j2.getPosition()].setIcon(null);
-            game = false;
-            p = p++;
-
-            try {
-                numeroPartie.setText(Integer.toString(p));
-            } catch (NumberFormatException nfe) {
-                numeroPartie.setText("0");
-            }
-        }
-        return p;
-    }
-
-    public int CalculerNbManche(Sorcier j1, Sorcier j2, Terrain t) { // Renvoie le nombre de manche dans l'historique
-        final String nomImageFeu = "perso/feu.gif";
-        int m = 0; // m représente le numero de manche actuel et mPrecedent le numero de la manche précédente
-        int mPrecedente = 0;
-        if ((j1.getMana() == 0) && (j2.getMana() == 0)) {
-
-            positionInterface[t.getPositionFeu()].setIcon(null);
-            t.setPositionFeu(j1.getPosition() + 3);  //égalité 
-            positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface
-            this.finirManche(j1, j2, t);
-            m = m++;
-
-            try {
-                numeroManche.setText(Integer.toString(m));
-                if (m > 1) {
-                    manchePrecedente.setText(Integer.toString(mPrecedente));
-                }
-            } catch (NumberFormatException nfe) {
-                numeroManche.setText("0");
-                manchePrecedente.setText("0");
-            }
-
-        } else if ((j1.getMana() == 0) || (j1.getPosition() >= t.getPositionFeu())) { //j1 perd
-
-            if (t.getPositionFeu() < j1.getPosition()) {
-                positionInterface[t.getPositionFeu()].setIcon(null);
-                t.setPositionFeu(j1.getPosition());  //le feu ne dépasse pas le joueur 1
-                positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
-                m = m++;
-
-                try {
-                    numeroManche.setText(Integer.toString(m));
-                } catch (NumberFormatException nfe) {
-                    numeroManche.setText("0");
-                }
-            }
-            this.finirManche(j1, j2, t);  //gestion fin de manche
-
-        } else if ((j2.getMana() == 0) || (t.getPositionFeu() >= j2.getPosition())) {  //j2 perd
-
-            if (j2.getPosition() < t.getPositionFeu()) {  //le feu ne dépasse pas le j2
-                positionInterface[t.getPositionFeu()].setIcon(null);
-                t.setPositionFeu(j2.getPosition());
-                positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
-                m = m++;
-
-                try {
-                    numeroManche.setText(Integer.toString(m));
-                } catch (NumberFormatException nfe) {
-                    numeroManche.setText("0");
-                }
-            }
-            this.finirManche(j1, j2, t);  //gestion fin de manche
-        }
-        return m;
-    }
 
     public static ImageIcon loadImage(String filename) {
         ImageIcon image = null;
@@ -458,6 +143,7 @@ public class Interface extends javax.swing.JFrame {
 
     private void initInterface(JPanel mainPanel, Sorcier j1, Sorcier j2, Terrain t) {
 
+        JPanel historique = new JPanel();
         int horizontal = 292;
         int verticalPont = 500;
         int verticalPos = verticalPont - 54;
@@ -497,18 +183,11 @@ public class Interface extends javax.swing.JFrame {
         return matcher.matches();  //renvoit un boolean si la chaine correspond bien à la regex (true si c'est le cas, false sinon)
     }
 
-    private String askName(String player, Sorcier player1, Sorcier player2) {  //Fonction pour demander au joueur son nom 
+    private String askName(String player) {  //Fonction pour demander au joueur son nom 
         String inputName = "";
         String message = player + ", entrez votre nom (au moins 1 lettre, chiffres et _ valides)";  //message affiché sur la fenêtre
         while ((inputName == null) || !(validateName(inputName))) {    //tant que le nom n'est pas valide ou que le joueur essaye de quitter la fenêtre
             inputName = JOptionPane.showInputDialog(this, message);   //une fenêtre JOptionPane récupère et renvoit l'input du joueur 
-
-            nomJoueur1.setText(inputName);
-            joueur1.setText(inputName);
-            nomJoueur2.setText(inputName);
-            joueur2.setText(inputName);
-            j1.setText(inputName);
-            j2.setText(inputName);
         }
         return inputName;   //On renvoit un nom valide
     }
@@ -528,20 +207,6 @@ public class Interface extends javax.swing.JFrame {
                 strBet = JOptionPane.showInputDialog(this, message);
                 bet = Integer.parseInt(strBet);
 
-                try {
-                    miseJ1.setText(Integer.toString(bet));
-                } catch (NumberFormatException nfe) {
-                    miseJ1.setText("-1");
-                }
-
-                if (miseJ1 != null) {
-
-                    try {
-                        miseJ2.setText(Integer.toString(bet));
-                    } catch (NumberFormatException nfe) {
-                        miseJ2.setText("-1");
-                    }
-                }
             } catch (NumberFormatException e) {
                 bet = -1;
             }
@@ -577,24 +242,11 @@ public class Interface extends javax.swing.JFrame {
         boolean cast = false;  //player wants to cast a spell
         boolean needHelp = false;   //player wants to read the help of a spell
         boolean selected = false;  //player has seleted a spell
-        int t = 0; //number of turns
-        int tPrevious = 0; //number of previous turns
 
         while (true) {
 
             int spell = -1;
             String selectedSpellName = "";
-            t = t++;
-
-            try {
-                numeroTour.setText(Integer.toString(t));
-
-                if (t > 1) {
-                    tourPrecedent.setText(Integer.toString(tPrevious));
-                }
-            } catch (NumberFormatException nfe) {
-                numeroTour.setText("0");
-            }
 
             if (!cast) {  //if player hasn't choose to cast a spell 
                 if (!(this.askSpell(player))) {
@@ -613,19 +265,6 @@ public class Interface extends javax.swing.JFrame {
                     selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts", JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
                     if (selectedSpellName != null) {  //if player hasn't cancel 
                         spell = player.getInDeck(selectedSpellName);  //spell take the value of the index in deck of the selected spell 
-
-                        try {
-                            sortJ1.setText(Integer.toString(spell) + selectedSpellName);
-                        } catch (NumberFormatException nfe) {
-                            sortJ1.setText("Pas de sort");
-                        }
-
-                        try {
-                            sortJ2.setText(Integer.toString(spell) + selectedSpellName);
-                        } catch (NumberFormatException nfe) {
-                            sortJ2.setText("Pas de sort");
-                        }
-
                         selected = true;
                     } else {
                         cast = false;
@@ -1310,6 +949,8 @@ public class Interface extends javax.swing.JFrame {
 
         startButton.setVisible(false);
         multipleWindowsButton.setVisible(false);
+        int nbTour = 0;
+        int nbManche = 1;
 
         game = true;
 
@@ -1318,8 +959,8 @@ public class Interface extends javax.swing.JFrame {
         String nomJ1 = this.askName("Joueur 1");
         String nomJ2 = this.askName("Joueur 2");
 
-        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu() - 3);
-        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu() + 3);
+        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu() - 3, "rouge");
+        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu() + 3, "vert");
 
         JPanel mainPanel = new JPanel();
 
@@ -1328,11 +969,21 @@ public class Interface extends javax.swing.JFrame {
         mainPanel.setSize(900, 600);
         this.add(mainPanel);
         mainPanel.setBackground(Color.BLACK);
+        
+        JPanel historiquePanel = new JPanel();
+
+        historiquePanel.setLayout(null);
+        historiquePanel.setLocation(0, 0);
+        historiquePanel.setSize(292, 600);
+        mainPanel.add(historiquePanel);
+        historiquePanel.setBackground(new Color(205, 183, 135));
 
         this.initInterface(mainPanel, joueur1, joueur2, terrain);
 
         while (this.game) {
 
+            nbTour ++;
+            initHistorique(historiquePanel, nbTour, nbManche);
             this.askBet(joueur1);
             this.askBet(joueur2);  //ask player how many mana they will bet 
 
@@ -1340,6 +991,9 @@ public class Interface extends javax.swing.JFrame {
                 this.selectSpells(joueur1);
                 this.selectSpells(joueur2);
             }
+            
+            afficherMise(historiquePanel, joueur1);
+            afficherMise(historiquePanel, joueur2);
 
             for (int i = 0; i < 10; i++) {
                 activateSpell(i, joueur1, joueur2, terrain);
@@ -1390,27 +1044,22 @@ public class Interface extends javax.swing.JFrame {
 
             joueur1.setMana(joueur1.getMana() - joueur1.getMise());
 
-            try {
-                nbManaRestantJ1.setText(Integer.toString(joueur1.getMana()));
-            } catch (NumberFormatException nfe) {
-                nbManaRestantJ1.setText("0");
-            }
-
             joueur2.setMana(joueur2.getMana() - joueur2.getMise());  //remove bet from total mana
-
-            try {
-                nbManaRestantJ2.setText(Integer.toString(joueur2.getMana()));
-            } catch (NumberFormatException nfe) {
-                nbManaRestantJ2.setText("0");
-            }
 
             for (int i = 12; i < 14; i++) {
                 activateSpell(i, joueur1, joueur2, terrain);
             }
 
-            this.verifierFinManche(joueur1, joueur2, terrain);
+            boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
+            
+            if (finManche) {
+                nbManche ++;
+                nbTour = 0;
+            }
 
             this.verifierFinPartie(terrain, joueur1, joueur2);
+            
+            JOptionPane.showMessageDialog(this, "Ceci est un message pour freeze le jeu", "Attention", JOptionPane.WARNING_MESSAGE);
 
         }
 
@@ -1430,6 +1079,7 @@ public class Interface extends javax.swing.JFrame {
 
         this.startButton.setVisible(false);
         this.multipleWindowsButton.setVisible(false);
+        int nbTour = 0;
 
         Interface j2Wind = new Interface();
 
@@ -1446,8 +1096,8 @@ public class Interface extends javax.swing.JFrame {
         String nomJ1 = this.askName("Joueur 1");
         String nomJ2 = j2Wind.askName("Joueur 2");
 
-        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu() - 3);
-        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu() + 3);
+        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu() - 3, "rouge");
+        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu() + 3, "vert");
 
         JPanel mainPanel = new JPanel();
         JPanel secondaryPanel = new JPanel();
@@ -1469,6 +1119,7 @@ public class Interface extends javax.swing.JFrame {
 
         while (this.game) {
 
+            nbTour ++;
             this.askBet(joueur1);
             j2Wind.askBet(joueur2);  //ask player how many mana they will bet 
 
@@ -1530,19 +1181,7 @@ public class Interface extends javax.swing.JFrame {
 
             joueur1.setMana(joueur1.getMana() - joueur1.getMise());
 
-            try {
-                nbManaRestantJ1.setText(Integer.toString(joueur1.getMana()));
-            } catch (NumberFormatException nfe) {
-                nbManaRestantJ1.setText("0");
-            }
-
             joueur2.setMana(joueur2.getMana() - joueur2.getMise());  //remove bet from total mana 
-
-            try {
-                nbManaRestantJ2.setText(Integer.toString(joueur2.getMana()));
-            } catch (NumberFormatException nfe) {
-                nbManaRestantJ2.setText("0");
-            }
 
             for (int i = 12; i < 14; i++) {
                 activateSpell(i, joueur1, joueur2, terrain);
