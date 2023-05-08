@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -58,9 +59,9 @@ public class Interface extends javax.swing.JFrame {
         JLabel info = new JLabel();
         String message = String.format("manche %d tour %d", manche, tour);
         info.setText(message);
-        historique.removeAll();
-        historique.repaint();       
+        historique.removeAll();  
         historique.add(info);
+        historique.repaint();     
   
     }
     
@@ -71,6 +72,7 @@ public class Interface extends javax.swing.JFrame {
         info.setText(message);
         changerCouleurPolice(player, info);
         historique.add(info);
+        historique.repaint();   
         
     }
     
@@ -81,6 +83,7 @@ public class Interface extends javax.swing.JFrame {
         info.setText(message);
         changerCouleurPolice(player, info);
         historique.add(info);
+        historique.repaint();   
         
     }
 
@@ -972,7 +975,7 @@ public class Interface extends javax.swing.JFrame {
         
         JPanel historiquePanel = new JPanel();
 
-        historiquePanel.setLayout(null);
+        historiquePanel.setLayout(new BoxLayout(historiquePanel, BoxLayout.Y_AXIS));;
         historiquePanel.setLocation(0, 0);
         historiquePanel.setSize(292, 600);
         mainPanel.add(historiquePanel);
