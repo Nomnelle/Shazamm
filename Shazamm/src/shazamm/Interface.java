@@ -5,12 +5,13 @@
 package shazamm;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
@@ -32,20 +33,7 @@ public class Interface extends javax.swing.JFrame {
     public Interface() {
         initComponents();
     }
-    
-    public static ImageIcon loadImage(String filename) {
-        ImageIcon image = null;
-        try {
-            // Obtenir le chemin de la ressource
-            File imageFile = new File("img/" + filename); //En partant de notre espace de travail (cf fichier build.xml), conserve le lien du fichier cherché 
-            InputStream inputStream = new FileInputStream(imageFile); //Contient les informations sur l'image, forme binaire 
-            image = new ImageIcon(ImageIO.read(inputStream));  //Retransforme les informations de l'objet InputStream en image utilisable 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-    
+
     public void changerCouleurPolice(Sorcier player, JLabel suiviJeu) {
  
         String couleur = player.getCouleur();
@@ -69,7 +57,7 @@ public class Interface extends javax.swing.JFrame {
     private void initHistorique(JPanel historique, int tour, int manche) {
         // Affiche le numero des tours, pour initialiser l'historique
         JLabel info = new JLabel();
-        String message = String.format("Manche %d Tour %d", manche, tour);
+        String message = String.format("manche %d tour %d", manche, tour);
         info.setText(message);
         historique.removeAll();  
         historique.add(info);
@@ -98,9 +86,67 @@ public class Interface extends javax.swing.JFrame {
         historique.repaint();   
         
     }
-    
-    private void initInterface(JPanel mainPanel, Sorcier j1, Sorcier j2, Terrain t){
-        
+
+    public void afficherHeureDate() {
+
+        SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+
+        heure1.setText(s.format(date));
+        heure2.setText(s.format(date));
+        heure3.setText(s.format(date));
+        heure4.setText(s.format(date));
+
+    }
+
+    public boolean afficherVainqueur(Sorcier player1, Sorcier player2, Terrain t) {
+
+        if ((player1.getMana() == 0) && (player2.getMana() == 0)) {
+
+            this.finirManche(player1, player2, t);
+            vainqueur.setText("Egalité !");
+
+            return true;
+
+        } else if (player1.getMise() < player2.getMise() || (player1.getMana() == 0) || (player1.getPosition() >= t.getPositionFeu())) {  //define winner
+
+            this.finirManche(player1, player2, t);
+            vainqueur.setText(player2.getNom());
+
+            return true;
+
+        } else if (player2.getMise() < player1.getMise() || (player2.getMana() == 0) || (player2.getPosition() >= t.getPositionFeu())) {
+
+            this.finirManche(player1, player2, t);  //gestion fin de manche
+            vainqueur.setText(player1.getNom());
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+    }
+
+
+    public static ImageIcon loadImage(String filename) {
+        ImageIcon image = null;
+        try {
+            // Obtenir le chemin de la ressource
+            File imageFile = new File("img/" + filename); //En partant de notre espace de travail (cf fichier build.xml), conserve le lien du fichier cherché 
+            InputStream inputStream = new FileInputStream(imageFile); //Contient les informations sur l'image, forme binaire 
+            image = new ImageIcon(ImageIO.read(inputStream));  //Retransforme les informations de l'objet InputStream en image utilisable 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
+    private void initInterface(JPanel mainPanel, Sorcier j1, Sorcier j2, Terrain t) {
+
+        JPanel historique = new JPanel();
         int horizontal = 292;
         int verticalPont = 500;
         int verticalPos = verticalPont - 54;
@@ -119,7 +165,7 @@ public class Interface extends javax.swing.JFrame {
             pontInterface[i].setSize(32, 100);
             mainPanel.add(pontInterface[i]);
             pontInterface[i].setIcon(loadImage(nomImage));
-            
+
             positionInterface[i] = new JLabel();
             positionInterface[i].setLocation(horizontal, verticalPos);
             positionInterface[i].setSize(32, 55);
@@ -127,32 +173,11 @@ public class Interface extends javax.swing.JFrame {
 
             horizontal = horizontal + 32;
         }
-        
-        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); 
+
+        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif"));
         positionInterface[j1.getPosition()].setIcon(loadImage("perso/rouge.gif"));
         positionInterface[j2.getPosition()].setIcon(loadImage("perso/vert.gif"));
-        
-    }
-    
-    
-    private void synchronizeSecondInterfaceHistorique(JPanel primaryHistorique, JPanel secondaryHistorique){
-        secondaryHistorique.removeAll(); 
-        ArrayList<String> historique = new ArrayList<>();
-        ArrayList<Color> infoColor = new ArrayList<>();
-        for (Component component : primaryHistorique.getComponents()) {
-            if (component instanceof JLabel) {
-                JLabel label = (JLabel) component;
-                Color color = label.getForeground();
-                historique.add(label.getText());
-                infoColor.add(color);
-            }
-        }
-        for(int i = 0; i < historique.size(); i++){
-            JLabel toAdd = new JLabel(historique.get(i));
-            toAdd.setForeground(infoColor.get(i));
-            secondaryHistorique.add(toAdd);
-        }
-        secondaryHistorique.repaint();
+
     }
 
     public static boolean validateName(String input) {  //permet de valider que notre string contient au moins une lettre, et que des caractères alphanumériques ou des underscores
@@ -169,235 +194,226 @@ public class Interface extends javax.swing.JFrame {
         }
         return inputName;   //On renvoit un nom valide
     }
-    
-    public static boolean validateBet(int input, Sorcier player){
-        return (input>0)&&(input <= player.getMana());
-    } 
-    
-    private void askBet(Sorcier player){
-        
-        int bet = -1; 
+
+    public static boolean validateBet(int input, Sorcier player) {
+        return (input > 0) && (input <= player.getMana());
+    }
+
+    private void askBet(Sorcier player) {
+
+        int bet = -1;
         String strBet = "";
         String message = String.format("%s, entrez votre mise (mana restant : %d, mise minimale à 1) :", player.getNom(), player.getMana());
-        
-        while((strBet == null)||(!(validateBet(bet, player)))){
+
+        while ((strBet == null) || (!(validateBet(bet, player)))) {
             try {
                 strBet = JOptionPane.showInputDialog(this, message);
                 bet = Integer.parseInt(strBet);
+
             } catch (NumberFormatException e) {
                 bet = -1;
             }
         }
         player.setMise(bet);
     }
-           
-    private boolean askSpell(Sorcier player){  //JOptionPane to ask player if he wants to cast spells
+
+    private boolean askSpell(Sorcier player) {  //JOptionPane to ask player if he wants to cast spells
         String message = String.format("%s, voulez-vous lancer un sort ?", player.getNom());
         int cast = JOptionPane.showOptionDialog(this, message, "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
         return cast != JOptionPane.NO_OPTION;
     }
-    
-    public static String[] formateSpellsName(Sorcier player){  //formate spells names for JOptionPane
-        
+
+    public static String[] formateSpellsName(Sorcier player) {  //formate spells names for JOptionPane
+
         ArrayList<String> spellsNamesList = new ArrayList<>();
-        
-        for(int cards : player.getMain()){
+
+        for (int cards : player.getMain()) {
             spellsNamesList.add(player.getInDeck(cards).getName());
         }
-                    
+
         Object[] spellsArr = spellsNamesList.toArray();
         String[] spellsNames = Arrays.copyOf(spellsArr, spellsArr.length, String[].class);
-        
+
         return spellsNames;
-        
+
     }
- 
-    private void selectSpells(Sorcier player){ //let player choose the spells he wants to cast
-        
-        player.lancerSort(); 
+
+    private void selectSpells(Sorcier player) { //let player choose the spells he wants to cast
+
+        player.lancerSort();
         ArrayList<Integer> castedSpells = new ArrayList<>();  //selected spells 
         boolean cast = false;  //player wants to cast a spell
         boolean needHelp = false;   //player wants to read the help of a spell
         boolean selected = false;  //player has seleted a spell
-        
-        while(true){
-            
+
+        while (true) {
+
             int spell = -1;
             String selectedSpellName = "";
-               
-            if(!cast){  //if player hasn't choose to cast a spell 
-                if(!(this.askSpell(player))){
+
+            if (!cast) {  //if player hasn't choose to cast a spell 
+                if (!(this.askSpell(player))) {
                     break;  //if player dosen't want to cast a spell, exit loop 
-                }else{
+                } else {
                     cast = true;  //else, moving on to the next JOptionPane 
                 }
             }
-            
-            if(player.getMain().isEmpty()){  //if player already used all of his spells, we're telling him and we exit loop
+
+            if (player.getMain().isEmpty()) {  //if player already used all of his spells, we're telling him and we exit loop
                 JOptionPane.showMessageDialog(this, "Vous n'avez plus de sort dans votre main...", "Attention", JOptionPane.WARNING_MESSAGE);
                 break;
-            }else{
-                if(!(selected)){  //else, if player hasn't selected a spell yet 
+            } else {
+                if (!(selected)) {  //else, if player hasn't selected a spell yet 
                     String[] spellsNames = formateSpellsName(player);  //we're showing him all of his options
-                    selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts",  JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
-                    if(selectedSpellName!=null){  //if player hasn't cancel 
+                    selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts", JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
+                    if (selectedSpellName != null) {  //if player hasn't cancel 
                         spell = player.getInDeck(selectedSpellName);  //spell take the value of the index in deck of the selected spell 
                         selected = true;
-                    }else{
+                    } else {
                         cast = false;
                     }
                 }
-                
-                if((!needHelp)&&(selected)){  //if player has selected a spell and has not choose if he wants help about it 
+
+                if ((!needHelp) && (selected)) {  //if player has selected a spell and has not choose if he wants help about it 
                     int helpChoice = JOptionPane.showOptionDialog(this, "Que souhaitez vous ? (aide ou jouer le sort)", "Sorts", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aide", "Caster", "Annuler"}, null);
-                    switch(helpChoice){
-                    case JOptionPane.YES_OPTION: //player wants help 
-                        needHelp = true; 
-                        break;
-                    case JOptionPane.NO_OPTION:  //we're going back to the first Panel  
-                        castedSpells.add(spell); //we're adding selected spell to list
-                        player.removeHand(spell); //we're removing selected spell from hand
-                        selected = false;
-                        cast = false;
-                        break;
-                    default:
-                        selected = false;
-                        cast = false;
-                        break;
+                    switch (helpChoice) {
+                        case JOptionPane.YES_OPTION: //player wants help 
+                            needHelp = true;
+                            break;
+                        case JOptionPane.NO_OPTION:  //we're going back to the first Panel  
+                            castedSpells.add(spell); //we're adding selected spell to list
+                            player.removeHand(spell); //we're removing selected spell from hand
+                            selected = false;
+                            cast = false;
+                            break;
+                        default:
+                            selected = false;
+                            cast = false;
+                            break;
                     }
                 }
-                if(needHelp){  //if player watns help, we're showing a Panel with description, image and the name of the spell
+                if (needHelp) {  //if player watns help, we're showing a Panel with description, image and the name of the spell
                     JOptionPane.showMessageDialog(this, "Informations sur le sort :\n" + player.getInDeck(spell).getDescription(), player.getInDeck(spell).getName(), JOptionPane.INFORMATION_MESSAGE, loadImage(player.getInDeck(spell).getImage()));
                     needHelp = false;
                 }
-                
-                
-            }    
+
+            }
         }
-        
+
         player.setSortActuel(castedSpells); //adding all selected spells to the casted spells
     }
-    
-    
-    public void activateSpell(int number, Sorcier j1, Sorcier j2, Terrain t, JPanel historique){
-        if(number == 2){
-            if(j1.getSortActuel().contains(number)&&j2.getSortActuel().contains(number)){
+
+    public static void activateSpell(int number, Sorcier j1, Sorcier j2, Terrain t) {
+        if (number == 2) {
+            if (j1.getSortActuel().contains(number) && j2.getSortActuel().contains(number)) {
                 j1.getInDeck(number).effet(t, j1, j2);
                 j2.setSortActuel(j1.getSortActuel());
-                this.afficherSort(historique, j1, number);
-                this.afficherSort(historique, j2, number);
-            }else if(j1.getSortActuel().contains(number)){  
+            } else if (j1.getSortActuel().contains(number)) {  //Brasier 
                 j1.getInDeck(number).effet(t, j1, j2);
-                this.afficherSort(historique, j1, number);
-            }else if(j2.getSortActuel().contains(number)){
+            } else if (j2.getSortActuel().contains(number)) {
                 j2.getInDeck(number).effet(t, j2, j1);
-                this.afficherSort(historique, j2, number);
             }
-        }else if(number == 0||number == 3||number == 4||number == 8||number == 9){
-            if(j1.getSortActuel().contains(number)){ 
+        } else if (number == 0 || number == 3 || number == 4 || number == 8 || number == 9) {
+            if (j1.getSortActuel().contains(number)) {  //Brasier 
                 j1.getInDeck(number).effet(t, j1, j2);
-                this.afficherSort(historique, j1, number);
-            }else if(j2.getSortActuel().contains(number)){
+            } else if (j2.getSortActuel().contains(number)) {
                 j2.getInDeck(number).effet(t, j2, j1);
-                this.afficherSort(historique, j2, number);
             }
-        }else{
-            if(j1.getSortActuel().contains(number)){  
+        } else {
+            if (j1.getSortActuel().contains(number)) {  //Clone 
                 j1.getInDeck(number).effet(t, j1, j2);
-                this.afficherSort(historique, j1, number);
             }
-            if(j2.getSortActuel().contains(number)){
-                    j2.getInDeck(number).effet(t, j2, j1);
-                    this.afficherSort(historique, j2, number);
+            if (j2.getSortActuel().contains(number)) {
+                j2.getInDeck(number).effet(t, j2, j1);
             }
         }
-        
-    } 
-    
-    private boolean verifierFinManche(Sorcier j1,Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
-        
+
+    }
+
+    private boolean verifierFinManche(Sorcier j1, Sorcier j2, Terrain t) { //Vérifie si c'est la fin de la manche
+
         final String nomImageFeu = "perso/feu.gif";
-            
-        if((j1.getMana()==0)&&(j2.getMana()==0)){     
-                
+
+        if ((j1.getMana() == 0) && (j2.getMana() == 0)) {
+
             positionInterface[t.getPositionFeu()].setIcon(null);
-            t.setPositionFeu(j1.getPosition()+3);  //égalité 
+            t.setPositionFeu(j1.getPosition() + 3);  //égalité 
             positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface
             this.finirManche(j1, j2, t);
             return true;
-                
-        }else if((j1.getMana() == 0)||(j1.getPosition() >= t.getPositionFeu())) { //j1 perd
-                
-            if(t.getPositionFeu()<j1.getPosition()){
+
+        } else if ((j1.getMana() == 0) || (j1.getPosition() >= t.getPositionFeu())) { //j1 perd
+
+            if (t.getPositionFeu() < j1.getPosition()) {
                 positionInterface[t.getPositionFeu()].setIcon(null);
                 t.setPositionFeu(j1.getPosition());  //le feu ne dépasse pas le joueur 1
                 positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
-                    
+
             }
             this.finirManche(j1, j2, t);  //gestion fin de manche
             return true;
-               
-        }else if ((j2.getMana() == 0)||(t.getPositionFeu()>=j2.getPosition())) {  //j2 perd
-                
+
+        } else if ((j2.getMana() == 0) || (t.getPositionFeu() >= j2.getPosition())) {  //j2 perd
+
             if (j2.getPosition() < t.getPositionFeu()) {  //le feu ne dépasse pas le j2
                 positionInterface[t.getPositionFeu()].setIcon(null);
                 t.setPositionFeu(j2.getPosition());
                 positionInterface[t.getPositionFeu()].setIcon(loadImage(nomImageFeu)); //ajouter le feu dans l'interface 
             }
             this.finirManche(j1, j2, t);  //gestion fin de manche
-            return true; 
+            return true;
         }
         return false;
     }
-        
-    private void finirManche(Sorcier j1, Sorcier j2, Terrain t){  //fonction qui permet d'émuler la fin de la manche
-        
+
+    private void finirManche(Sorcier j1, Sorcier j2, Terrain t) {  //fonction qui permet d'émuler la fin de la manche
+
         String nomImageSorcierJ1 = "perso/rouge.gif";
         String nomImageSorcierJ2 = "perso/vert.gif";
-        
+
         positionInterface[j1.getPosition()].setIcon(null);
         positionInterface[j2.getPosition()].setIcon(null);
-                
-        j1.setPosition(t.getPositionFeu()-3);
-        j2.setPosition(t.getPositionFeu()+3);  //on repositionne les joueurs 
-                
+
+        j1.setPosition(t.getPositionFeu() - 3);
+        j2.setPosition(t.getPositionFeu() + 3);  //on repositionne les joueurs 
+
         positionInterface[j1.getPosition()].setIcon(loadImage(nomImageSorcierJ1));
         positionInterface[j2.getPosition()].setIcon(loadImage(nomImageSorcierJ2));  //on repositionne les icones des joueurs sur l'interface
-        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); 
-                
+        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif"));
+
         j1.setMana(50);
         j2.setMana(50);  //les joueurs retrouvent leurs points de mana
-                
-        if(!(t.getSort())){
+
+        if (!(t.getSort())) {
             t.setSort();   //si le sort mutisme a été lancé, il est levé 
         }
-                
-        for(int i = 0;i<3;i++){
+
+        for (int i = 0; i < 3; i++) {
             j1.piocher();
             j2.piocher();
         }
-                
+
         t.ecrouler();
         this.updatePont(t);
     }
-    
-    private void updateInterfaceManche(Sorcier j1, Sorcier j2, Terrain t, int oldPosJ1, int oldPosJ2){  //fonction qui permet d'émuler la fin de la manche sur deuxième fenêtre
-        
+
+    private void updateInterfaceManche(Sorcier j1, Sorcier j2, Terrain t, int oldPosJ1, int oldPosJ2) {  //fonction qui permet d'émuler la fin de la manche
+
         String nomImageSorcierJ1 = "perso/rouge.gif";
         String nomImageSorcierJ2 = "perso/vert.gif";
-        
+
         positionInterface[oldPosJ1].setIcon(null);
         positionInterface[oldPosJ2].setIcon(null);
-                
+
         positionInterface[j1.getPosition()].setIcon(loadImage(nomImageSorcierJ1));
         positionInterface[j2.getPosition()].setIcon(loadImage(nomImageSorcierJ2));  //on repositionne les icones des joueurs sur l'interface
-        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); 
+        positionInterface[t.getPositionFeu()].setIcon(loadImage("perso/feu.gif"));
 
         this.updatePont(t);
     }
 
     private void updatePont(Terrain t) {  //fonction modélisant l'écroulement du pont //on change quand on en a besoin rather vérification  
-        for (int i = 0; i < 19; i++) { 
+        for (int i = 0; i < 19; i++) {
             if (!(t.getTabPontCase(i))) {  //si la case est écroullée 
                 String nomImage = "";
 
@@ -411,31 +427,85 @@ public class Interface extends javax.swing.JFrame {
             }
         }
     }
-    
-    private void verifierFinPartie(Terrain t, Sorcier j1, Sorcier j2){
-        
-        if(!(t.getTabPontCase(j1.getPosition()))){
+
+    private void verifierFinPartie(Terrain t, Sorcier j1, Sorcier j2) {
+
+        if (!(t.getTabPontCase(j1.getPosition()))) {
             positionInterface[j1.getPosition()].setIcon(null);
             game = false;
-        }else if(!(t.getTabPontCase(j2.getPosition()))){
+        } else if (!(t.getTabPontCase(j2.getPosition()))) {
             positionInterface[j2.getPosition()].setIcon(null);
             game = false;
         }
-        
+
     }
 
-        /**
-         * This method is called from within the constructor to initialize the
-         * form. WARNING: Do NOT modify this code. The content of this method is
-         * always regenerated by the Form Editor.
-         */
-        @SuppressWarnings("unchecked")
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         popup = new javax.swing.JFrame();
         startButton = new javax.swing.JButton();
         multipleWindowsButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        manchePrecedente = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        tourPrecedent = new javax.swing.JTextField();
+        heure1 = new javax.swing.JTextField();
+        heure2 = new javax.swing.JTextField();
+        heure3 = new javax.swing.JTextField();
+        heure4 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        nomJoueur1 = new javax.swing.JTextField();
+        nomJoueur2 = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        joueur1 = new javax.swing.JTextField();
+        joueur2 = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        miseJ1 = new javax.swing.JTextField();
+        miseJ2 = new javax.swing.JTextField();
+        sortJ1 = new javax.swing.JTextField();
+        sortJ2 = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        vainqueur = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        j1 = new javax.swing.JTextField();
+        j2 = new javax.swing.JTextField();
+        nbManaAvantJ1 = new javax.swing.JTextField();
+        nbManaAvantJ2 = new javax.swing.JTextField();
+        j1Mise = new javax.swing.JTextField();
+        j2Mise = new javax.swing.JTextField();
+        forceAttaqueJ1 = new javax.swing.JTextField();
+        forceAttaqueJ2 = new javax.swing.JTextField();
+        perteManaJ1 = new javax.swing.JTextField();
+        perteManaJ2 = new javax.swing.JTextField();
+        nbManaRestantJ1 = new javax.swing.JTextField();
+        nbManaRestantJ2 = new javax.swing.JTextField();
+        jSeparator2 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jSeparator4 = new javax.swing.JSeparator();
+        jSeparator5 = new javax.swing.JSeparator();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jSeparator6 = new javax.swing.JSeparator();
+        jLabel15 = new javax.swing.JLabel();
+        numeroPartie = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        numeroManche = new javax.swing.JTextField();
+        numeroTour = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         new_game = new javax.swing.JMenuItem();
@@ -478,6 +548,94 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("MANCHE N°");
+
+        manchePrecedente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manchePrecedenteActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("-");
+
+        jLabel3.setText("TOUR N°");
+
+        tourPrecedent.setText("jTextField2");
+        tourPrecedent.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tourPrecedentActionPerformed(evt);
+            }
+        });
+
+        heure1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                heure1ActionPerformed(evt);
+            }
+        });
+
+        heure4.setText("jTextField6");
+
+        jLabel4.setText("a misé");
+
+        jLabel5.setText("a misé");
+
+        jLabel6.setText("BILAN DES MISES");
+
+        jLabel7.setText("Mise");
+
+        jLabel8.setText("Sorts");
+
+        jLabel9.setText("Le gagnant du tour est");
+
+        jLabel10.setText("Réserve avant");
+
+        jLabel11.setText("Mise");
+
+        jLabel12.setText("Force d'attaque");
+
+        nbManaAvantJ1.setText("jTextField20");
+
+        nbManaAvantJ2.setText("jTextField21");
+
+        j1Mise.setText("jTextField22");
+
+        j2Mise.setText("jTextField23");
+
+        forceAttaqueJ1.setText("jTextField24");
+
+        forceAttaqueJ2.setText("jTextField25");
+
+        perteManaJ1.setText("jTextField26");
+
+        perteManaJ2.setText("jTextField27");
+
+        nbManaRestantJ1.setText("jTextField28");
+
+        nbManaRestantJ2.setText("jTextField29");
+
+        jLabel13.setText("Perte de mana");
+
+        jLabel14.setText("Réserve après");
+
+        jLabel15.setText("Partie N°");
+
+        numeroPartie.setText("jTextField7");
+
+        jLabel16.setText("Manche #");
+
+        jLabel17.setText("-");
+
+        jLabel18.setText("Tour #");
+
+        numeroManche.setText("jTextField8");
+        numeroManche.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                numeroMancheActionPerformed(evt);
+            }
+        });
+
+        numeroTour.setText("jTextField30");
+
         jMenu1.setText("File");
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -517,23 +675,265 @@ public class Interface extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(412, 412, 412)
+                        .addComponent(heure4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(278, 278, 278)
+                                .addComponent(multipleWindowsButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sortJ2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(sortJ1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(vainqueur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel11))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(j1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(j2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(nbManaAvantJ1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(nbManaAvantJ2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(j1Mise, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(forceAttaqueJ1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(j2Mise, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                        .addGap(12, 12, 12)
+                                                        .addComponent(forceAttaqueJ2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))))))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(perteManaJ1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(nbManaRestantJ1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nbManaRestantJ2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(perteManaJ2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(miseJ1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(33, 33, 33)
+                                        .addComponent(joueur1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(joueur2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(miseJ2, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jSeparator5)
+                            .addComponent(jSeparator4)
+                            .addComponent(jSeparator3)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(heure2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(nomJoueur2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(jLabel5))
+                                                    .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(heure1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(nomJoueur1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel4))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(heure3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(30, 30, 30)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(107, 107, 107)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(startButton))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(355, 355, 355)
-                        .addComponent(multipleWindowsButton)))
-                .addContainerGap(357, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(manchePrecedente, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tourPrecedent, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(numeroPartie, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24)
+                                .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(numeroManche, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(numeroTour, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(339, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(241, 241, 241)
-                .addComponent(startButton)
-                .addGap(54, 54, 54)
-                .addComponent(multipleWindowsButton)
-                .addContainerGap(232, Short.MAX_VALUE))
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(numeroPartie))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel16)
+                        .addComponent(jLabel17)
+                        .addComponent(jLabel18)
+                        .addComponent(numeroManche, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(numeroTour, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(15, 15, 15)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(manchePrecedente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tourPrecedent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nomJoueur1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(heure1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(heure2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(nomJoueur2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel5))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator2)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(116, 116, 116)
+                                        .addComponent(startButton)
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel9)
+                                            .addComponent(vainqueur, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(joueur1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(joueur2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel7)
+                                            .addComponent(miseJ1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(miseJ2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel8)
+                                            .addComponent(sortJ1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(sortJ2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(1, 1, 1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(heure3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(40, 40, 40)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(j1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(j2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel10)
+                                    .addComponent(nbManaAvantJ1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(nbManaAvantJ2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(14, 14, 14)
+                                        .addComponent(multipleWindowsButton))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel11)
+                                            .addComponent(j1Mise, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(j2Mise, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                            .addComponent(jLabel12)
+                                            .addComponent(forceAttaqueJ1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(forceAttaqueJ2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(perteManaJ1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(perteManaJ2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(heure4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nbManaRestantJ1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(nbManaRestantJ2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         pack();
@@ -552,22 +952,21 @@ public class Interface extends javax.swing.JFrame {
 
         startButton.setVisible(false);
         multipleWindowsButton.setVisible(false);
-        
-        game = true;
-        
         int nbTour = 0;
         int nbManche = 1;
-        
+
+        game = true;
+
         Terrain terrain = new Terrain();
-        
+
         String nomJ1 = this.askName("Joueur 1");
         String nomJ2 = this.askName("Joueur 2");
-        
-        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu()-3, "rouge");
-        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3, "vert");
+
+        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu() - 3, "rouge");
+        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu() + 3, "vert");
 
         JPanel mainPanel = new JPanel();
-        
+
         mainPanel.setLayout(null);
         mainPanel.setLocation(0, 0);
         mainPanel.setSize(900, 600);
@@ -581,114 +980,98 @@ public class Interface extends javax.swing.JFrame {
         historiquePanel.setSize(292, 600);
         mainPanel.add(historiquePanel);
         historiquePanel.setBackground(new Color(205, 183, 135));
-        
+
         this.initInterface(mainPanel, joueur1, joueur2, terrain);
-        
-        Sorcier gagnant;
-        String message = "";
-        
-        while(this.game){
-            
+
+        while (this.game) {
+
             nbTour ++;
             initHistorique(historiquePanel, nbTour, nbManche);
-            
             this.askBet(joueur1);
             this.askBet(joueur2);  //ask player how many mana they will bet 
-            
-            if(terrain.getSort()){
+
+            if (terrain.getSort()) {
                 this.selectSpells(joueur1);
                 this.selectSpells(joueur2);
             }
             
             afficherMise(historiquePanel, joueur1);
             afficherMise(historiquePanel, joueur2);
-            
-            for(int i = 0; i<10;i++){
-                activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
+
+            for (int i = 0; i < 10; i++) {
+                activateSpell(i, joueur1, joueur2, terrain);
             }
-            
-            if(joueur1.getMise()<joueur2.getMise()){  //define winner
-                
-                gagnant = joueur2;
-                message = String.format("Le feu avance vers la gauche suite aux attaques de %s", gagnant.getNom());
-                
-                if(joueur1.getSortActuel().contains(10)){  //Si le joueur 1 a Resistance 
+
+            if (joueur1.getMise() < joueur2.getMise()) {  //define winner
+
+                if (joueur1.getSortActuel().contains(10)) {  //Si le joueur 1 a Resistance 
                     joueur1.getInDeck(10).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur1, 10);
-                    message = String.format("Le feu devrait avancer vers la droite suite aux attaques de %s, mais il reste immobile...", gagnant.getNom());
                 }
-                if(joueur1.getSortActuel().contains(11)){  //Si le joueur 1 a Harpagon 
+                if (joueur1.getSortActuel().contains(11)) {  //Si le joueur 1 a Harpagon 
                     joueur1.getInDeck(11).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur1, 11);
                 }
-                
+
                 positionInterface[terrain.getPositionFeu()].setIcon(null);  //remove old flame image 
-                terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());  //move fire 
+                terrain.setPositionFeu(terrain.getPositionFeu() - terrain.getNbCaseDeplacement());  //move fire 
                 positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
-                
-            }else if(joueur1.getMise()>joueur2.getMise()){
-                gagnant = joueur1;
-                message = String.format("Le feu avance vers la droite suite aux attaques de %s", gagnant.getNom());
-                if(joueur2.getSortActuel().contains(10)){  //si le joueur 2 a Resistance 
+
+            } else if (joueur1.getMise() > joueur2.getMise()) {
+                if (joueur2.getSortActuel().contains(10)) {  //si le joueur 2 a Resistance 
                     joueur2.getInDeck(10).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur2, 10);
-                    message = String.format("Le feu devrait avancer vers la droite suite aux attaques de %s, mais il reste immobile...", gagnant.getNom());
                 }
-                if(joueur2.getSortActuel().contains(11)){  //Si le joueur 2 a Harpagon 
+                if (joueur2.getSortActuel().contains(11)) {  //Si le joueur 2 a Harpagon 
                     joueur2.getInDeck(11).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur2, 11);
                 }
                 positionInterface[terrain.getPositionFeu()].setIcon(null);
-                terrain.setPositionFeu(terrain.getPositionFeu()+terrain.getNbCaseDeplacement());
-                positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface
-                
-            }else{
-                message = "Les attaques sont aussi fortes d'un côté que de l'autre ! le feu ne bouge pas.";
+                terrain.setPositionFeu(terrain.getPositionFeu() + terrain.getNbCaseDeplacement());
+                positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
             }
-            
-            if(terrain.getNbCaseDeplacement()!=1){  //Si le nombre de case de déplacement du feu a été modifié, il est réinitialisé 
-                    terrain.setNbCaseDeplacement(1);
+
+            if (terrain.getNbCaseDeplacement() != 1) {  //Si le nombre de case de déplacement du feu a été modifié, il est réinitialisé 
+                terrain.setNbCaseDeplacement(1);
             }
-            
-            if(joueur1.getSortActuel().contains(7)){  //Si Double Dose a été joué par le j1, on enlève son effet à la mise de base 
-                joueur1.setMise(joueur1.getMise()/2);
+
+            if (joueur1.getSortActuel().contains(7)) {  //Si Double Dose a été joué par le j1, on enlève son effet à la mise de base 
+                joueur1.setMise(joueur1.getMise() / 2);
             }
-            if(joueur1.getSortActuel().contains(6)){ //Même chose mais si Boost a été joué 
-                joueur1.setMise(joueur1.getMise()-7);
+            if (joueur1.getSortActuel().contains(6)) { //Même chose mais si Boost a été joué 
+                joueur1.setMise(joueur1.getMise() - 7);
             }
-            
-            if(joueur2.getSortActuel().contains(7)){  //Même principe, mais si le j2 a joué Double dose 
-                joueur2.setMise(joueur2.getMise()/2);
+
+            if (joueur2.getSortActuel().contains(7)) {  //Même principe, mais si le j2 a joué Double dose 
+                joueur2.setMise(joueur2.getMise() / 2);
             }
-            if(joueur2.getSortActuel().contains(6)){  //et si le j2 a joué Boost
-                joueur2.setMise(joueur2.getMise()-7);
+            if (joueur2.getSortActuel().contains(6)) {  //et si le j2 a joué Boost
+                joueur2.setMise(joueur2.getMise() - 7);
             }
-            
-            joueur1.setMana(joueur1.getMana()-joueur1.getMise());
-            joueur2.setMana(joueur2.getMana()-joueur2.getMise());  //remove bet from total mana 
-            
-            for(int i = 12; i<14;i++){
-                activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
+
+            joueur1.setMana(joueur1.getMana() - joueur1.getMise());
+
+            joueur2.setMana(joueur2.getMana() - joueur2.getMise());  //remove bet from total mana
+
+            for (int i = 12; i < 14; i++) {
+                activateSpell(i, joueur1, joueur2, terrain);
             }
-            
+
             boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
-            if(finManche){
-                nbManche++;
+            
+            if (finManche) {
+                nbManche ++;
                 nbTour = 0;
             }
-            
+
             this.verifierFinPartie(terrain, joueur1, joueur2);
             
-            JOptionPane.showMessageDialog(this, message, "Attention", JOptionPane.WARNING_MESSAGE);
-                      
+            JOptionPane.showMessageDialog(this, "Ceci est un message pour freeze le jeu", "Attention", JOptionPane.WARNING_MESSAGE);
+
         }
-        
+
         this.remove(mainPanel);  //remove panel to reset game
         this.repaint();   //update frame
-        
+
         startButton.setVisible(true);
         multipleWindowsButton.setVisible(true);
-        
+
     }//GEN-LAST:event_startButtonMouseClicked
 
     private void multipleWindowsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_multipleWindowsButtonActionPerformed
@@ -696,187 +1079,160 @@ public class Interface extends javax.swing.JFrame {
     }//GEN-LAST:event_multipleWindowsButtonActionPerformed
 
     private void multipleWindowsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_multipleWindowsButtonMouseClicked
-        
+
         this.startButton.setVisible(false);
         this.multipleWindowsButton.setVisible(false);
-        
-        Interface j2Wind = new Interface();
-        
-        j2Wind .startButton.setVisible(false);
-        j2Wind .multipleWindowsButton.setVisible(false);
-        j2Wind.setVisible(true);
-        
-        this.game = true;
-        
         int nbTour = 0;
-        int nbManche = 1;
-        
+
+        Interface j2Wind = new Interface();
+
+        j2Wind.startButton.setVisible(false);
+        j2Wind.multipleWindowsButton.setVisible(false);
+        j2Wind.setVisible(true);
+
+        this.game = true;
+
         Terrain terrain = new Terrain();
 
         j2Wind.setVisible(true);
-        
+
         String nomJ1 = this.askName("Joueur 1");
         String nomJ2 = j2Wind.askName("Joueur 2");
-        
-        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu()-3, "rouge");
-        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3, "vert");
-        
+
+        Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu() - 3, "rouge");
+        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu() + 3, "vert");
+
         JPanel mainPanel = new JPanel();
         JPanel secondaryPanel = new JPanel();
-        
+
         mainPanel.setLayout(null);
         mainPanel.setLocation(0, 0);
         mainPanel.setSize(900, 600);
-        this.getContentPane().add(mainPanel);
+        this.add(mainPanel);
         mainPanel.setBackground(Color.BLACK);
-        
+
         secondaryPanel.setLayout(null);
-        secondaryPanel.setLocation(0,0);
+        secondaryPanel.setLocation(0, 0);
         secondaryPanel.setSize(900, 600);
-        j2Wind.getContentPane().add(secondaryPanel);
+        j2Wind.add(secondaryPanel);
         secondaryPanel.setBackground(Color.BLACK);
-        
-        JPanel historiquePanel = new JPanel();
-        historiquePanel.setLayout(new BoxLayout(historiquePanel, BoxLayout.Y_AXIS));;
-        historiquePanel.setLocation(0, 0);
-        historiquePanel.setSize(292, 600);
-        mainPanel.add(historiquePanel);
-        historiquePanel.setBackground(new Color(205, 183, 135));
-        
-        JPanel secondHistoriquePanel = new JPanel();
-        secondHistoriquePanel.setLayout(new BoxLayout(secondHistoriquePanel, BoxLayout.Y_AXIS));;
-        secondHistoriquePanel.setLocation(0, 0);
-        secondHistoriquePanel.setSize(292, 600);
-        secondaryPanel.add(secondHistoriquePanel);
-        secondHistoriquePanel.setBackground(new Color(205, 183, 135));
-        
+
         this.initInterface(mainPanel, joueur1, joueur2, terrain);
         j2Wind.initInterface(secondaryPanel, joueur1, joueur2, terrain);
-        
-        Sorcier gagnant;
-        String message = "";
 
-        while(this.game){
-            
+        while (this.game) {
+
             nbTour ++;
-            initHistorique(historiquePanel, nbTour, nbManche);
-            initHistorique(secondHistoriquePanel, nbTour, nbManche);
-            
             this.askBet(joueur1);
             j2Wind.askBet(joueur2);  //ask player how many mana they will bet 
-            
-            if(terrain.getSort()){
+
+            if (terrain.getSort()) {
                 this.selectSpells(joueur1);
                 j2Wind.selectSpells(joueur2);
             }
-            
-            afficherMise(historiquePanel, joueur1);
-            afficherMise(historiquePanel, joueur2);
-            
-            for(int i = 0; i<10;i++){
-                activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
+
+            for (int i = 0; i < 10; i++) {
+                activateSpell(i, joueur1, joueur2, terrain);
             }
-            
-            if(joueur1.getMise()<joueur2.getMise()){  //define winner
-                
-                gagnant = joueur2;
-                message = String.format("Le feu avance vers la gauche suite aux attaques de %s", gagnant.getNom());
-                
-                if(joueur1.getSortActuel().contains(10)){  //Si le joueur 1 a Resistance 
+
+            if (joueur1.getMise() < joueur2.getMise()) {  //define winner
+
+                if (joueur1.getSortActuel().contains(10)) {  //Si le joueur 1 a Resistance 
                     joueur1.getInDeck(10).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur1, 10);
-                    message = String.format("Le feu devrait avancer vers la droite suite aux attaques de %s, mais il reste immobile...", gagnant.getNom());
                 }
-                if(joueur1.getSortActuel().contains(11)){  //Si le joueur 1 a Harpagon 
+                if (joueur1.getSortActuel().contains(11)) {  //Si le joueur 1 a Harpagon 
                     joueur1.getInDeck(11).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur1, 11);
                 }
-                
+
                 this.positionInterface[terrain.getPositionFeu()].setIcon(null);  //remove old flame image
                 j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(null);
-                terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());  //move fire 
+                terrain.setPositionFeu(terrain.getPositionFeu() - terrain.getNbCaseDeplacement());  //move fire 
                 this.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
-                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
-                
-            }else if(joueur1.getMise()>joueur2.getMise()){
-                gagnant = joueur1;
-                message = String.format("Le feu avance vers la droite suite aux attaques de %s", gagnant.getNom());
-                if(joueur2.getSortActuel().contains(10)){  //si le joueur 2 a Resistance 
+                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif"));
+
+            } else if (joueur1.getMise() > joueur2.getMise()) {
+                if (joueur2.getSortActuel().contains(10)) {  //si le joueur 2 a Resistance 
                     joueur2.getInDeck(10).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur2, 10);
-                    message = String.format("Le feu devrait avancer vers la droite suite aux attaques de %s, mais il reste immobile...", gagnant.getNom());
                 }
-                if(joueur2.getSortActuel().contains(11)){  //Si le joueur 2 a Harpagon 
+                if (joueur2.getSortActuel().contains(11)) {  //Si le joueur 2 a Harpagon 
                     joueur2.getInDeck(11).effet(terrain, joueur1, joueur2);
-                    this.afficherSort(historiquePanel, joueur2, 11);
                 }
-                this.positionInterface[terrain.getPositionFeu()].setIcon(null);  //remove old flame image
+                this.positionInterface[terrain.getPositionFeu()].setIcon(null);
                 j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(null);
-                terrain.setPositionFeu(terrain.getPositionFeu()-terrain.getNbCaseDeplacement());  //move fire 
+                terrain.setPositionFeu(terrain.getPositionFeu() + terrain.getNbCaseDeplacement());
                 this.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface 
-                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif")); //ajouter le feu dans l'interface
-                
-            }else{
-                message = "Les attaques sont aussi fortes d'un côté que de l'autre ! le feu ne bouge pas.";
+                j2Wind.positionInterface[terrain.getPositionFeu()].setIcon(loadImage("perso/feu.gif"));
             }
-            
-            if(terrain.getNbCaseDeplacement()!=1){  //Si le nombre de case de déplacement du feu a été modifié, il est réinitialisé 
-                    terrain.setNbCaseDeplacement(1);
+
+            if (terrain.getNbCaseDeplacement() != 1) {  //Si le nombre de case de déplacement du feu a été modifié, il est réinitialisé 
+                terrain.setNbCaseDeplacement(1);
             }
-            
-            if(joueur1.getSortActuel().contains(7)){  //Si Double Dose a été joué par le j1, on enlève son effet à la mise de base 
-                joueur1.setMise(joueur1.getMise()/2);
+
+            if (joueur1.getSortActuel().contains(7)) {  //Si Double Dose a été joué par le j1, on enlève son effet à la mise de base 
+                joueur1.setMise(joueur1.getMise() / 2);
             }
-            if(joueur1.getSortActuel().contains(6)){ //Même chose mais si Boost a été joué 
-                joueur1.setMise(joueur1.getMise()-7);
+            if (joueur1.getSortActuel().contains(6)) { //Même chose mais si Boost a été joué 
+                joueur1.setMise(joueur1.getMise() - 7);
             }
-            
-            if(joueur2.getSortActuel().contains(7)){  //Même principe, mais si le j2 a joué Double dose 
-                joueur2.setMise(joueur2.getMise()/2);
+
+            if (joueur2.getSortActuel().contains(7)) {  //Même principe, mais si le j2 a joué Double dose 
+                joueur2.setMise(joueur2.getMise() / 2);
             }
-            if(joueur2.getSortActuel().contains(6)){  //et si le j2 a joué Boost
-                joueur2.setMise(joueur2.getMise()-7);
+            if (joueur2.getSortActuel().contains(6)) {  //et si le j2 a joué Boost
+                joueur2.setMise(joueur2.getMise() - 7);
             }
-            
-            joueur1.setMana(joueur1.getMana()-joueur1.getMise());
-            joueur2.setMana(joueur2.getMana()-joueur2.getMise());  //remove bet from total mana 
-            
-            for(int i = 12; i<14;i++){
-                activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
+
+            joueur1.setMana(joueur1.getMana() - joueur1.getMise());
+
+            joueur2.setMana(joueur2.getMana() - joueur2.getMise());  //remove bet from total mana 
+
+            for (int i = 12; i < 14; i++) {
+                activateSpell(i, joueur1, joueur2, terrain);
             }
-            
+
             int oldPosJ1 = joueur1.getPosition();
             int oldPosJ2 = joueur2.getPosition();
             boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
-            if(finManche){
+            if (finManche) {
                 j2Wind.updateInterfaceManche(joueur1, joueur2, terrain, oldPosJ1, oldPosJ2);
-                nbManche++;
-                nbTour = 0;
             }
-            
+
             this.verifierFinPartie(terrain, joueur1, joueur2);
-            
-            this.synchronizeSecondInterfaceHistorique(historiquePanel, secondHistoriquePanel);
-            
+
             secondaryPanel.repaint();
-            
-            JOptionPane.showMessageDialog(null, message, "Attention", JOptionPane.WARNING_MESSAGE);                  
+
         }
-        
+
         j2Wind.dispose();
-        
+
         this.remove(mainPanel);  //remove panel to reset game
         this.repaint();   //update frame
-        
+
         startButton.setVisible(true);
         multipleWindowsButton.setVisible(true);
     }//GEN-LAST:event_multipleWindowsButtonMouseClicked
+
+    private void heure1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_heure1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_heure1ActionPerformed
+
+    private void numeroMancheActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numeroMancheActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_numeroMancheActionPerformed
+
+    private void manchePrecedenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manchePrecedenteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_manchePrecedenteActionPerformed
+
+    private void tourPrecedentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tourPrecedentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tourPrecedentActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Interface().setVisible(true);
@@ -886,14 +1242,68 @@ public class Interface extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem about;
+    private javax.swing.JTextField forceAttaqueJ1;
+    private javax.swing.JTextField forceAttaqueJ2;
     private javax.swing.JMenu help;
+    private javax.swing.JTextField heure1;
+    private javax.swing.JTextField heure2;
+    private javax.swing.JTextField heure3;
+    private javax.swing.JTextField heure4;
+    private javax.swing.JTextField j1;
+    private javax.swing.JTextField j1Mise;
+    private javax.swing.JTextField j2;
+    private javax.swing.JTextField j2Mise;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JTextField joueur1;
+    private javax.swing.JTextField joueur2;
+    private javax.swing.JTextField manchePrecedente;
+    private javax.swing.JTextField miseJ1;
+    private javax.swing.JTextField miseJ2;
     private javax.swing.JButton multipleWindowsButton;
+    private javax.swing.JTextField nbManaAvantJ1;
+    private javax.swing.JTextField nbManaAvantJ2;
+    private javax.swing.JTextField nbManaRestantJ1;
+    private javax.swing.JTextField nbManaRestantJ2;
     private javax.swing.JMenuItem new_game;
+    private javax.swing.JTextField nomJoueur1;
+    private javax.swing.JTextField nomJoueur2;
+    private javax.swing.JTextField numeroManche;
+    private javax.swing.JTextField numeroPartie;
+    private javax.swing.JTextField numeroTour;
+    private javax.swing.JTextField perteManaJ1;
+    private javax.swing.JTextField perteManaJ2;
     private javax.swing.JFrame popup;
     private javax.swing.JMenuItem quit;
+    private javax.swing.JTextField sortJ1;
+    private javax.swing.JTextField sortJ2;
     private javax.swing.JButton startButton;
+    private javax.swing.JTextField tourPrecedent;
+    private javax.swing.JTextField vainqueur;
     // End of variables declaration//GEN-END:variables
     private boolean game = false;
     JLabel[] pontInterface = new JLabel[19];
