@@ -22,21 +22,23 @@ public class HistoriqueJoueurs {
         // TODO code application logic here
         Connection con = null;
         ResultSet rs;
-        String serverName = "mysql-shazamm-mick-purson-zaarate.alwaysdata.net";
-        String mydatabase = "shazamm-mick-purson-zaarate";
-        String username = "312193";
-        String password = "Shazamm.2023";//mot de passe de l'utilisateur
+        String host = "mysql-shazamm-mick-purson-zaarate.alwaysdata.net";
+        String dbname = "shazamm-mick-purson-zaarate";
+        String port = "3306";
+        String password = "312193";
+        String username = "Shazamm.2023";//mot de passe de l'utilisateur
         String query;
         
         try {
+            String connectUrl = "jdbc:mysql://" + host + ":" + port + "/" + dbname;
             Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
-            con = DriverManager.getConnection(username, password);
+            con = DriverManager.getConnection(connectUrl, username, password);
             System.out.println("Database connection established.");
 
             Statement stmt = con.createStatement();
             
             query = "SELECT * FROM joueurs";
-            ResultSet rs = stmt.executeQuery(query);
+            rs = stmt.executeQuery(query);
             
             while (rs.next()){
                 
@@ -57,6 +59,8 @@ public class HistoriqueJoueurs {
                     con.close();
                     System.out.println("Database connection terminated.");
                 } catch (Exception e) { /* ignore close errors */ }
-    }
+            }
     
+        }
+    }
 }
