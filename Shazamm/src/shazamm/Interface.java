@@ -598,6 +598,13 @@ public class Interface extends javax.swing.JFrame {
         String nomJ1 = this.askName("Joueur 1");
         String nomJ2 = this.askName("Joueur 2");
         
+        if(nomJ2.equals(nomJ1)){
+            while(nomJ2.equals(nomJ1)){
+                JOptionPane.showMessageDialog(this, "Joueur 2, votre nom est identique à celui du joueur 1.\nVeuillez le modifier.", "Attention", JOptionPane.WARNING_MESSAGE);
+                nomJ2 = this.askName("Joueur 2");
+            }
+        }
+        
         Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu()-3, "rouge");
         Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3, "vert");
 
@@ -773,6 +780,13 @@ public class Interface extends javax.swing.JFrame {
         
         String nomJ1 = this.askName("Joueur 1");
         String nomJ2 = j2Wind.askName("Joueur 2");
+        
+        if(nomJ2.equals(nomJ1)){
+            while(nomJ2.equals(nomJ1)){
+                JOptionPane.showMessageDialog(j2Wind, "Joueur 2, votre nom est identique à celui du joueur 1.\nVeuillez le modifier.", "Attention", JOptionPane.WARNING_MESSAGE);
+                nomJ2 = j2Wind.askName("Joueur 2");
+            }
+        }
         
         Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu()-3, "rouge");
         Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3, "vert");
