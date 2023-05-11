@@ -1,23 +1,24 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package shazamm;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 /**
  *
- * @author linazaarate
+ * @author nomnelle
  */
 public class BDD {
     
-    Connection con;
+        Connection con;
     String host;
     String dbName;
     String port;
@@ -65,7 +66,7 @@ public class BDD {
     
     public ArrayList<String> getTuples(){
         ArrayList<String> res = null;
-        String query = "SELECT nom_gagnant, COUNT(*) AS nombre_victoires FROM Shazamm GROUP BY nom_gagnant;";
+        String query = "SELECT nom_gagnant, COUNT(*) AS nombre_victoires FROM Shazamm GROUP BY nom_gagnant ORDER BY nombre_victoires DESC LIMIT 20;";
         try {
             this.openConnexion();
             Statement stmt = this.con.createStatement();
@@ -78,7 +79,7 @@ public class BDD {
                 for (int i = 1; i <= metadata.getColumnCount(); i++) {
                     tuple += rs.getString(i);
                     if (i<metadata.getColumnCount()) {
-                        tuple +=";";
+                        tuple +=":";
                     }
                 }
                 res.add(tuple);
@@ -111,15 +112,4 @@ public class BDD {
         }
     }
     
-    public static void main(String args[]){
-        
-        BDD test = new BDD();
-        test.insertTuples("Socrate", "rouge");
-        test.insertTuples("Tesla", "vert");
-        test.insertTuples("Tesla", "vert");
-        ArrayList<String> resultat = test.getTuples();
-        System.out.println(resultat.toString());
-        
-    }
-
 }

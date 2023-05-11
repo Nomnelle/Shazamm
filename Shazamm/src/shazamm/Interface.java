@@ -132,6 +132,25 @@ public class Interface extends javax.swing.JFrame {
         positionInterface[j1.getPosition()].setIcon(loadImage("perso/rouge.gif"));
         positionInterface[j2.getPosition()].setIcon(loadImage("perso/vert.gif"));
         
+        int posName = 292 + 144;
+
+        JLabel name1 = new JLabel();
+        name1.setLocation(posName, 200);
+        name1.setSize(50,30);
+        name1.setText(j1.getNom());
+        name1.setForeground(Color.RED);
+        
+        posName += 304;
+        
+        JLabel name2 = new JLabel();
+        name2.setLocation(posName, 200);
+        name2.setSize(50,30);
+        name2.setText(j2.getNom());
+        name2.setForeground(Color.GREEN);
+        
+        mainPanel.add(name1);
+        mainPanel.add(name2);
+            
     }
     
     
@@ -239,7 +258,7 @@ public class Interface extends javax.swing.JFrame {
             }else{
                 if(!(selected)){  //else, if player hasn't selected a spell yet 
                     String[] spellsNames = formateSpellsName(player);  //we're showing him all of his options
-                    selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts",  JOptionPane.PLAIN_MESSAGE, null, spellsNames, spellsNames[0]);
+                    selectedSpellName = (String) JOptionPane.showInputDialog(this, "Choisissez un sort parmis ceux dans votre main", "Sorts",  JOptionPane.QUESTION_MESSAGE, null, spellsNames, spellsNames[0]);
                     if(selectedSpellName!=null){  //if player hasn't cancel 
                         spell = player.getInDeck(selectedSpellName);  //spell take the value of the index in deck of the selected spell 
                         selected = true;
@@ -412,15 +431,16 @@ public class Interface extends javax.swing.JFrame {
         }
     }
     
-    private void verifierFinPartie(Terrain t, Sorcier j1, Sorcier j2){
+    private boolean verifierFinPartie(Terrain t, Sorcier j1, Sorcier j2){
         
         if(!(t.getTabPontCase(j1.getPosition()))){
             positionInterface[j1.getPosition()].setIcon(null);
-            game = false;
+            return false;
         }else if(!(t.getTabPontCase(j2.getPosition()))){
             positionInterface[j2.getPosition()].setIcon(null);
-            game = false;
+            return false;
         }
+        return true;
         
     }
 
@@ -436,6 +456,7 @@ public class Interface extends javax.swing.JFrame {
         popup = new javax.swing.JFrame();
         startButton = new javax.swing.JButton();
         multipleWindowsButton = new javax.swing.JButton();
+        highScoreButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         new_game = new javax.swing.JMenuItem();
@@ -475,6 +496,13 @@ public class Interface extends javax.swing.JFrame {
         multipleWindowsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 multipleWindowsButtonActionPerformed(evt);
+            }
+        });
+
+        highScoreButton.setText("High Score");
+        highScoreButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                highScoreButtonMouseClicked(evt);
             }
         });
 
@@ -523,7 +551,10 @@ public class Interface extends javax.swing.JFrame {
                         .addComponent(startButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(355, 355, 355)
-                        .addComponent(multipleWindowsButton)))
+                        .addComponent(multipleWindowsButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(395, 395, 395)
+                        .addComponent(highScoreButton)))
                 .addContainerGap(357, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -533,7 +564,9 @@ public class Interface extends javax.swing.JFrame {
                 .addComponent(startButton)
                 .addGap(54, 54, 54)
                 .addComponent(multipleWindowsButton)
-                .addContainerGap(232, Short.MAX_VALUE))
+                .addGap(58, 58, 58)
+                .addComponent(highScoreButton)
+                .addContainerGap(150, Short.MAX_VALUE))
         );
 
         pack();
@@ -550,10 +583,11 @@ public class Interface extends javax.swing.JFrame {
 
     private void startButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_startButtonMouseClicked
 
+        BDD db = new BDD();
         startButton.setVisible(false);
         multipleWindowsButton.setVisible(false);
         
-        game = true;
+        boolean game = true;
         
         int nbTour = 0;
         int nbManche = 1;
@@ -584,10 +618,10 @@ public class Interface extends javax.swing.JFrame {
         
         this.initInterface(mainPanel, joueur1, joueur2, terrain);
         
-        Sorcier gagnant;
+        Sorcier gagnant = null;
         String message = "";
         
-        while(this.game){
+        while(game){
             
             nbTour ++;
             initHistorique(historiquePanel, nbTour, nbManche);
@@ -610,7 +644,11 @@ public class Interface extends javax.swing.JFrame {
             if(joueur1.getMise()<joueur2.getMise()){  //define winner
                 
                 gagnant = joueur2;
-                message = String.format("Le feu avance vers la gauche suite aux attaques de %s", gagnant.getNom());
+                if(joueur1.getSortActuel().contains(8)||joueur2.getSortActuel().contains(8)){
+                    message = String.format("Malgré une attaque plus puissante que son adversaire, le feu avance vers %s...", gagnant.getNom());
+                }else{
+                    message = String.format("Le feu avance vers la gauche suite aux attaques de %s", gagnant.getNom());
+                }  
                 
                 if(joueur1.getSortActuel().contains(10)){  //Si le joueur 1 a Resistance 
                     joueur1.getInDeck(10).effet(terrain, joueur1, joueur2);
@@ -628,7 +666,13 @@ public class Interface extends javax.swing.JFrame {
                 
             }else if(joueur1.getMise()>joueur2.getMise()){
                 gagnant = joueur1;
-                message = String.format("Le feu avance vers la droite suite aux attaques de %s", gagnant.getNom());
+                           
+                if(joueur1.getSortActuel().contains(8)||joueur2.getSortActuel().contains(8)){
+                    message = String.format("Malgré une attaque plus puissante que son adversaire, le feu avance vers %s...", gagnant.getNom());
+                }else{
+                    message = String.format("Le feu avance vers la droite suite aux attaques de %s", gagnant.getNom());
+                } 
+                
                 if(joueur2.getSortActuel().contains(10)){  //si le joueur 2 a Resistance 
                     joueur2.getInDeck(10).effet(terrain, joueur1, joueur2);
                     this.afficherSort(historiquePanel, joueur2, 10);
@@ -677,10 +721,15 @@ public class Interface extends javax.swing.JFrame {
                 nbTour = 0;
             }
             
-            this.verifierFinPartie(terrain, joueur1, joueur2);
+            game = this.verifierFinPartie(terrain, joueur1, joueur2);
             
-            JOptionPane.showMessageDialog(this, message, "Attention", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, message, "Fin du tour", JOptionPane.INFORMATION_MESSAGE);
                       
+        }
+        message = "Le sorcier "+gagnant.getNom()+" est vainqueur !";
+        JOptionPane.showMessageDialog(this, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
+        if(gagnant!=null){
+            db.insertTuples(gagnant.getNom(), gagnant.getCouleur());
         }
         
         this.remove(mainPanel);  //remove panel to reset game
@@ -697,6 +746,7 @@ public class Interface extends javax.swing.JFrame {
 
     private void multipleWindowsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_multipleWindowsButtonMouseClicked
         
+        BDD db = new BDD();
         this.startButton.setVisible(false);
         this.multipleWindowsButton.setVisible(false);
         
@@ -706,7 +756,7 @@ public class Interface extends javax.swing.JFrame {
         j2Wind .multipleWindowsButton.setVisible(false);
         j2Wind.setVisible(true);
         
-        this.game = true;
+        boolean game = true;
         
         int nbTour = 0;
         int nbManche = 1;
@@ -753,10 +803,10 @@ public class Interface extends javax.swing.JFrame {
         this.initInterface(mainPanel, joueur1, joueur2, terrain);
         j2Wind.initInterface(secondaryPanel, joueur1, joueur2, terrain);
         
-        Sorcier gagnant;
+        Sorcier gagnant = null;
         String message = "";
 
-        while(this.game){
+        while(game){
             
             nbTour ++;
             initHistorique(historiquePanel, nbTour, nbManche);
@@ -780,7 +830,12 @@ public class Interface extends javax.swing.JFrame {
             if(joueur1.getMise()<joueur2.getMise()){  //define winner
                 
                 gagnant = joueur2;
-                message = String.format("Le feu avance vers la gauche suite aux attaques de %s", gagnant.getNom());
+                if(joueur1.getSortActuel().contains(8)||joueur2.getSortActuel().contains(8)){
+                    message = String.format("Malgré une attaque plus puissante que son adversaire, le feu avance vers %s...", gagnant.getNom());
+                }else{
+                    message = String.format("Le feu avance vers la gauche suite aux attaques de %s", gagnant.getNom());
+                }  
+                
                 
                 if(joueur1.getSortActuel().contains(10)){  //Si le joueur 1 a Resistance 
                     joueur1.getInDeck(10).effet(terrain, joueur1, joueur2);
@@ -800,7 +855,11 @@ public class Interface extends javax.swing.JFrame {
                 
             }else if(joueur1.getMise()>joueur2.getMise()){
                 gagnant = joueur1;
-                message = String.format("Le feu avance vers la droite suite aux attaques de %s", gagnant.getNom());
+                if(joueur1.getSortActuel().contains(8)||joueur2.getSortActuel().contains(8)){
+                    message = String.format("Malgré une attaque plus puissante que son adversaire, le feu avance vers %s...", gagnant.getNom());
+                }else{
+                    message = String.format("Le feu avance vers la droite suite aux attaques de %s", gagnant.getNom());
+                } 
                 if(joueur2.getSortActuel().contains(10)){  //si le joueur 2 a Resistance 
                     joueur2.getInDeck(10).effet(terrain, joueur1, joueur2);
                     this.afficherSort(historiquePanel, joueur2, 10);
@@ -854,13 +913,19 @@ public class Interface extends javax.swing.JFrame {
                 nbTour = 0;
             }
             
-            this.verifierFinPartie(terrain, joueur1, joueur2);
+            game = this.verifierFinPartie(terrain, joueur1, joueur2);
             
             this.synchronizeSecondInterfaceHistorique(historiquePanel, secondHistoriquePanel);
             
             secondaryPanel.repaint();
             
-            JOptionPane.showMessageDialog(null, message, "Attention", JOptionPane.WARNING_MESSAGE);                  
+            JOptionPane.showMessageDialog(null, message, "Fin du tour", JOptionPane.INFORMATION_MESSAGE);                  
+        }
+        
+        message = "Le sorcier "+gagnant.getNom()+" est vainqueur !";
+        JOptionPane.showMessageDialog(null, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
+        if(gagnant!=null){
+            db.insertTuples(gagnant.getNom(), gagnant.getCouleur());
         }
         
         j2Wind.dispose();
@@ -871,6 +936,21 @@ public class Interface extends javax.swing.JFrame {
         startButton.setVisible(true);
         multipleWindowsButton.setVisible(true);
     }//GEN-LAST:event_multipleWindowsButtonMouseClicked
+
+    private void highScoreButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highScoreButtonMouseClicked
+        
+        ArrayList<String> data = new ArrayList<>();
+        BDD db = new BDD();
+        String message = "";
+        
+        data = db.getTuples();
+        
+        for(int i=0;i<data.size();i++){
+            message+=data.get(i)+"\n";
+        }
+        
+        JOptionPane.showMessageDialog(this, message, "High Score", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_highScoreButtonMouseClicked
 
     /**
      * @param args the command line arguments
@@ -887,6 +967,7 @@ public class Interface extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem about;
     private javax.swing.JMenu help;
+    private javax.swing.JButton highScoreButton;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JButton multipleWindowsButton;
@@ -895,7 +976,6 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JMenuItem quit;
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
-    private boolean game = false;
     JLabel[] pontInterface = new JLabel[19];
     JLabel[] positionInterface = new JLabel[19];
 }
