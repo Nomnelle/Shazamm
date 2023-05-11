@@ -132,11 +132,11 @@ public class Interface extends javax.swing.JFrame {
         positionInterface[j1.getPosition()].setIcon(loadImage("perso/rouge.gif"));
         positionInterface[j2.getPosition()].setIcon(loadImage("perso/vert.gif"));
         
-        int posName = 292 + 144;
+        int posName = 292 + 154 - 50;
 
         JLabel name1 = new JLabel();
         name1.setLocation(posName, 200);
-        name1.setSize(50,30);
+        name1.setSize(100,30);
         name1.setText(j1.getNom());
         name1.setForeground(Color.RED);
         
@@ -144,7 +144,7 @@ public class Interface extends javax.swing.JFrame {
         
         JLabel name2 = new JLabel();
         name2.setLocation(posName, 200);
-        name2.setSize(50,30);
+        name2.setSize(100,30);
         name2.setText(j2.getNom());
         name2.setForeground(Color.GREEN);
         
