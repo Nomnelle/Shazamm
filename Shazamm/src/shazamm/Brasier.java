@@ -20,7 +20,6 @@ public class Brasier extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //fait que le feu se déplace de deux cases au lieu d'une 
        if(t.getSort()){  //si le joueur peut lancer un sort 
-           System.out.println("Un sort fait que le feu s'intensifie...");
            if(t.getNbCaseDeplacement()==1){  //cas normal 
                t.setNbCaseDeplacement(t.getNbCaseDeplacement()+1);  //le feu se déplacera de 2
            }else if(t.getNbCaseDeplacement()==-1){  //cas où le sort "Qui perd gagne" a été lancé 

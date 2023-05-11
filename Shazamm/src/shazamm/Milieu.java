@@ -20,7 +20,6 @@ public class Milieu extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //le feu se replace entre les deux joueurs
        if(t.getSort()){  //si le joueur peut lancer un sort 
-           System.out.println("Un sort fait que le feu se replace entre les deux joueurs.");
            if(j1.getPosition()<t.getPositionFeu()){  //si le joueur 1 lance le sort 
                t.setPositionFeu(j1.getPosition()+3);
            }else{  //si le joueur 2 lance le sort 

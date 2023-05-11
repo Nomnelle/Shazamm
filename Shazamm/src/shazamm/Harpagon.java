@@ -20,7 +20,6 @@ public class Harpagon extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //passe la mise du joueur à 0
        if(t.getSort()){
-           System.out.printf("Un sort fait que %s garde sa mise.", j1.getNom());
            j1.setMise(0);
        }
     }

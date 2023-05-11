@@ -20,7 +20,6 @@ public class Fin extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //met fin à la manche
        if(t.getSort()){
-           System.out.println("Un sort décide la fin de la manche!");
            j1.setMise(0);  //les joueurs ne misent rien, donc le feu n'avancera pas et rien de sera soustrait à leur réserve
            j2.setMise(0);
            if(j1.getPosition()<t.getPositionFeu()){  //si c'est le joueur 1 qui joue le sort 
@@ -38,6 +37,8 @@ public class Fin extends Carte{
                 j1.piocher();
                 j2.piocher();
             }
+           
+           t.ecrouler();
        }
     }
 }

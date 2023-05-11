@@ -20,7 +20,6 @@ public class Boost extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //augmente l'attaque de 7 points 
         if(t.getSort()){  //si le joueur peut lancer le sort, il augmente sa mise de 7 points 
-            System.out.printf("L'attaque de %s est augmentée !", j1.getNom());
             j1.setMise(j1.getMise()+7);
         }
     }

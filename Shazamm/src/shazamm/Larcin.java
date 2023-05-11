@@ -22,7 +22,6 @@ public class Larcin extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //les sorts de l'adversaires passent sous le contrôle du joueur 
        if(t.getSort()){  //si le joueur peut lancer des sorts 
-           System.out.printf("Les sorts de %s sont sous le contrôle de %s !", j2.getNom(), j1.getNom());
            ArrayList<Integer> tmp = new ArrayList<>(j2.getSortActuel()); //on récupère les sorts de l'adversaire 
            j1.setSortActuel(tmp);  //on les ajoute à ceux du joueur 
            tmp.clear();

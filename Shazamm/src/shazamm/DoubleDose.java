@@ -20,7 +20,6 @@ public class DoubleDose extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //double la mise du joueur 
         if(t.getSort()){
-            System.out.printf("L'attaque de %s est doublée !", j1.getNom());
             j1.setMise(j1.getMise()*2);
         }
     }

@@ -20,7 +20,6 @@ public class Reserve extends Carte{
     @Override
     public void effet(Terrain t, Sorcier j1, Sorcier j2){  //augmente la réserve de mana de 13 points 
        if(t.getSort()){
-           System.out.println("Un sort regarni la réserve de mana.");
            j1.setMana(j1.getMana()+13);
        }
     }

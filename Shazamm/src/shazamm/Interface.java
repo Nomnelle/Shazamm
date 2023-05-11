@@ -400,13 +400,14 @@ public class Interface extends javax.swing.JFrame {
         this.updatePont(t);
     }
     
-    private void updateInterfaceManche(Sorcier j1, Sorcier j2, Terrain t, int oldPosJ1, int oldPosJ2){  //fonction qui permet d'émuler la fin de la manche sur deuxième fenêtre
+    private void updateInterfaceManche(Sorcier j1, Sorcier j2, Terrain t){  //fonction qui permet d'émuler la fin de la manche sur deuxième fenêtre
         
         String nomImageSorcierJ1 = "perso/rouge.gif";
         String nomImageSorcierJ2 = "perso/vert.gif";
         
-        positionInterface[oldPosJ1].setIcon(null);
-        positionInterface[oldPosJ2].setIcon(null);
+        for(int i=0;i<positionInterface.length;i++){
+            positionInterface[i].setIcon(null);
+        }
                 
         positionInterface[j1.getPosition()].setIcon(loadImage(nomImageSorcierJ1));
         positionInterface[j2.getPosition()].setIcon(loadImage(nomImageSorcierJ2));  //on repositionne les icones des joueurs sur l'interface
@@ -641,6 +642,10 @@ public class Interface extends javax.swing.JFrame {
                 activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
             }
             
+            if(joueur1.getSortActuel().contains(3)||joueur2.getSortActuel().contains(3)||joueur1.getSortActuel().contains(4)||joueur2.getSortActuel().contains(4)){
+               this.updateInterfaceManche(joueur1, joueur2, terrain);
+            }
+            
             if(joueur1.getMise()<joueur2.getMise()){  //define winner
                 
                 gagnant = joueur2;
@@ -714,6 +719,7 @@ public class Interface extends javax.swing.JFrame {
             for(int i = 12; i<14;i++){
                 activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
             }
+            
             
             boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
             if(finManche){
@@ -827,6 +833,11 @@ public class Interface extends javax.swing.JFrame {
                 activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
             }
             
+            if(joueur1.getSortActuel().contains(3)||joueur2.getSortActuel().contains(3)||joueur1.getSortActuel().contains(4)||joueur2.getSortActuel().contains(4)){
+               this.updateInterfaceManche(joueur1, joueur2, terrain);
+               j2Wind.updateInterfaceManche(joueur1, joueur2, terrain);
+            }
+            
             if(joueur1.getMise()<joueur2.getMise()){  //define winner
                 
                 gagnant = joueur2;
@@ -908,7 +919,7 @@ public class Interface extends javax.swing.JFrame {
             int oldPosJ2 = joueur2.getPosition();
             boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
             if(finManche){
-                j2Wind.updateInterfaceManche(joueur1, joueur2, terrain, oldPosJ1, oldPosJ2);
+                j2Wind.updateInterfaceManche(joueur1, joueur2, terrain);
                 nbManche++;
                 nbTour = 0;
             }
