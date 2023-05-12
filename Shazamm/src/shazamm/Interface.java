@@ -33,7 +33,7 @@ public class Interface extends javax.swing.JFrame {
         initComponents();
     }
     
-    public static ImageIcon loadImage(String filename) {
+    public static ImageIcon loadImage(String filename) {  //loading images from img folder 
         ImageIcon image = null;
         try {
             // Obtenir le chemin de la ressource
@@ -45,9 +45,9 @@ public class Interface extends javax.swing.JFrame {
         }
         return image;
     }
-    
-    public void changerCouleurPolice(Sorcier player, JLabel suiviJeu) {
- 
+     
+    public void changerCouleurPolice(Sorcier player, JLabel suiviJeu) {  //chnge record text color according to the player it is referring to 
+  
         String couleur = player.getCouleur();
                 
         switch(couleur) {
@@ -66,7 +66,7 @@ public class Interface extends javax.swing.JFrame {
 
     }
     
-    private void initHistorique(JPanel historique, int tour, int manche) {
+    private void initHistorique(JPanel historique, int tour, int manche) {  //initialize record 
         // Affiche le numero des tours, pour initialiser l'historique
         JLabel info = new JLabel();
         String message = String.format("Manche %d Tour %d", manche, tour);
@@ -77,7 +77,7 @@ public class Interface extends javax.swing.JFrame {
   
     }
     
-    private void afficherMise(JPanel historique, Sorcier player) { // ira en-dessous lorsque les joueurs ont choisi les sorts
+    private void afficherMise(JPanel historique, Sorcier player) { //adding bet to the record 
         
         JLabel info = new JLabel();
         String message = String.format("%s a misé %d", player.getNom(), player.getMise());
@@ -88,7 +88,7 @@ public class Interface extends javax.swing.JFrame {
         
     }
     
-    private void afficherSort(JPanel historique, Sorcier player, int number) { // ira dans activateSpell
+    private void afficherSort(JPanel historique, Sorcier player, int number) { // adding spells to the record 
         
         JLabel info = new JLabel();
         String message = String.format("Le sort %s de %s s'active", player.getInDeck(number).getName(), player.getNom());
@@ -99,13 +99,13 @@ public class Interface extends javax.swing.JFrame {
         
     }
     
-    private void initInterface(JPanel mainPanel, Sorcier j1, Sorcier j2, Terrain t){
+    private void initInterface(JPanel mainPanel, Sorcier j1, Sorcier j2, Terrain t){  //initialize interface 
         
         int horizontal = 292;
         int verticalPont = 500;
         int verticalPos = verticalPont - 54;
 
-        for (int i = 0; i < pontInterface.length; i++) {
+        for (int i = 0; i < pontInterface.length; i++) {  //element of array pontInterface and posInterface 
 
             String nomImage;
             if (i < 9) {
@@ -114,11 +114,11 @@ public class Interface extends javax.swing.JFrame {
                 nomImage = String.format("/pont/pont_%d.gif", (i + 1));
             }
 
-            pontInterface[i] = new JLabel();
-            pontInterface[i].setLocation(horizontal, verticalPont);
-            pontInterface[i].setSize(32, 100);
+            pontInterface[i] = new JLabel();  //creating a new JLabel 
+            pontInterface[i].setLocation(horizontal, verticalPont);  //setting its location 
+            pontInterface[i].setSize(32, 100);  //setting its size 
             mainPanel.add(pontInterface[i]);
-            pontInterface[i].setIcon(loadImage(nomImage));
+            pontInterface[i].setIcon(loadImage(nomImage));  //loading the right image 
             
             positionInterface[i] = new JLabel();
             positionInterface[i].setLocation(horizontal, verticalPos);
@@ -158,11 +158,11 @@ public class Interface extends javax.swing.JFrame {
         secondaryHistorique.removeAll(); 
         ArrayList<String> historique = new ArrayList<>();
         ArrayList<Color> infoColor = new ArrayList<>();
-        for (Component component : primaryHistorique.getComponents()) {
-            if (component instanceof JLabel) {
-                JLabel label = (JLabel) component;
-                Color color = label.getForeground();
-                historique.add(label.getText());
+        for (Component component : primaryHistorique.getComponents()) {  //for hich JLabel in primary record 
+            if (component instanceof JLabel) {  
+                JLabel label = (JLabel) component;  
+                Color color = label.getForeground();  //we're retrieving color 
+                historique.add(label.getText());  //and text for each of them 
                 infoColor.add(color);
             }
         }
@@ -299,28 +299,28 @@ public class Interface extends javax.swing.JFrame {
     
     
     public void activateSpell(int number, Sorcier j1, Sorcier j2, Terrain t, JPanel historique){
-        if(number == 2){
+        if(number == 2){  // if spell is Larcin 
             if(j1.getSortActuel().contains(number)&&j2.getSortActuel().contains(number)){
                 j1.getInDeck(number).effet(t, j1, j2);
                 j2.setSortActuel(j1.getSortActuel());
                 this.afficherSort(historique, j1, number);
-                this.afficherSort(historique, j2, number);
-            }else if(j1.getSortActuel().contains(number)){  
+                this.afficherSort(historique, j2, number);  //if both players cast it, both cast the same spells 
+            }else if(j1.getSortActuel().contains(number)){  //else, player 1 stealing all spells of player 2 
                 j1.getInDeck(number).effet(t, j1, j2);
                 this.afficherSort(historique, j1, number);
-            }else if(j2.getSortActuel().contains(number)){
+            }else if(j2.getSortActuel().contains(number)){ //else, player 2 stealing all spells of player 1
                 j2.getInDeck(number).effet(t, j2, j1);
                 this.afficherSort(historique, j2, number);
             }
-        }else if(number == 0||number == 3||number == 4||number == 8||number == 9){
+        }else if(number == 0||number == 3||number == 4||number == 8||number == 9){  //if players cast one of these spells 
             if(j1.getSortActuel().contains(number)){ 
                 j1.getInDeck(number).effet(t, j1, j2);
-                this.afficherSort(historique, j1, number);
+                this.afficherSort(historique, j1, number);  //only one of them can cast it 
             }else if(j2.getSortActuel().contains(number)){
                 j2.getInDeck(number).effet(t, j2, j1);
                 this.afficherSort(historique, j2, number);
             }
-        }else{
+        }else{  //else, both players can cast the spell 
             if(j1.getSortActuel().contains(number)){  
                 j1.getInDeck(number).effet(t, j1, j2);
                 this.afficherSort(historique, j1, number);
@@ -725,25 +725,25 @@ public class Interface extends javax.swing.JFrame {
             joueur2.setMana(joueur2.getMana()-joueur2.getMise());  //remove bet from total mana 
             
             for(int i = 12; i<14;i++){
-                activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
+                activateSpell(i, joueur1, joueur2, terrain, historiquePanel);  //activating spells Reserve and Aspiration 
             }
             
             
-            boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
-            if(finManche){
+            boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain); //cheling if it's the end of the round 
+            if(finManche){  //if end of round 
                 nbManche++;
                 nbTour = 0;
             }
             
-            game = this.verifierFinPartie(terrain, joueur1, joueur2);
+            game = this.verifierFinPartie(terrain, joueur1, joueur2);  //cheking if it's the end of the game 
             
-            JOptionPane.showMessageDialog(this, message, "Fin du tour", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, message, "Fin du tour", JOptionPane.INFORMATION_MESSAGE);  
                       
         }
         message = "Le sorcier "+gagnant.getNom()+" est vainqueur !";
-        JOptionPane.showMessageDialog(this, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
-        if(gagnant!=null){
-            db.insertTuples(gagnant.getNom(), gagnant.getCouleur());
+        JOptionPane.showMessageDialog(this, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);  //showing which player win 
+        if(gagnant!=null){  
+            db.insertTuples(gagnant.getNom(), gagnant.getCouleur());  //adding winner to the database 
         }
         
         this.remove(mainPanel);  //remove panel to reset game
@@ -751,7 +751,7 @@ public class Interface extends javax.swing.JFrame {
         
         startButton.setVisible(true);
         multipleWindowsButton.setVisible(true);
-        this.highScoreButton.setVisible(true);
+        this.highScoreButton.setVisible(true);  //making buttons visible again 
         
     }//GEN-LAST:event_startButtonMouseClicked
 
@@ -761,31 +761,31 @@ public class Interface extends javax.swing.JFrame {
 
     private void multipleWindowsButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_multipleWindowsButtonMouseClicked
         
-        BDD db = new BDD();
+        BDD db = new BDD();  
         this.startButton.setVisible(false);
         this.multipleWindowsButton.setVisible(false);
-        this.highScoreButton.setVisible(false);
+        this.highScoreButton.setVisible(false);  //make buttons disappear 
         
-        Interface j2Wind = new Interface();
+        Interface j2Wind = new Interface(); //creating second interface 
         
-        j2Wind .startButton.setVisible(false);
+        j2Wind .startButton.setVisible(false);  
         j2Wind .multipleWindowsButton.setVisible(false);
-        j2Wind.highScoreButton.setVisible(false);
+        j2Wind.highScoreButton.setVisible(false);  //make buttons disappear on second interface 
         j2Wind.setVisible(true);
         
-        boolean game = true;
-        
+        boolean game = true;  //determine if game is on (true : game ongoing) 
+         
         int nbTour = 0;
         int nbManche = 1;
         
-        Terrain terrain = new Terrain();
+        Terrain terrain = new Terrain();  //initialize field 
 
-        j2Wind.setVisible(true);
+        j2Wind.setVisible(true);  //second interface is now visible 
         
         String nomJ1 = this.askName("Joueur 1");
-        String nomJ2 = j2Wind.askName("Joueur 2");
+        String nomJ2 = j2Wind.askName("Joueur 2");  //asking players for their name 
         
-        if(nomJ2.equals(nomJ1)){
+        if(nomJ2.equals(nomJ1)){  //making sure that players don't have both the same name 
             while(nomJ2.equals(nomJ1)){
                 JOptionPane.showMessageDialog(j2Wind, "Joueur 2, votre nom est identique à celui du joueur 1.\nVeuillez le modifier.", "Attention", JOptionPane.WARNING_MESSAGE);
                 nomJ2 = j2Wind.askName("Joueur 2");
@@ -793,43 +793,43 @@ public class Interface extends javax.swing.JFrame {
         }
         
         Sorcier joueur1 = new Sorcier(nomJ1, terrain.getPositionFeu()-3, "rouge");
-        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3, "vert");
+        Sorcier joueur2 = new Sorcier(nomJ2, terrain.getPositionFeu()+3, "vert");  //creating for players 
         
         JPanel mainPanel = new JPanel();
-        JPanel secondaryPanel = new JPanel();
+        JPanel secondaryPanel = new JPanel();  //creating game panels 
         
-        mainPanel.setLayout(null);
+        mainPanel.setLayout(null);  //game panel initialisation
         mainPanel.setLocation(0, 0);
         mainPanel.setSize(900, 600);
         this.getContentPane().add(mainPanel);
         mainPanel.setBackground(Color.BLACK);
         
-        secondaryPanel.setLayout(null);
+        secondaryPanel.setLayout(null);  //game panel for second interface initialisation
         secondaryPanel.setLocation(0,0);
         secondaryPanel.setSize(900, 600);
         j2Wind.getContentPane().add(secondaryPanel);
         secondaryPanel.setBackground(Color.BLACK);
         
-        JPanel historiquePanel = new JPanel();
+        JPanel historiquePanel = new JPanel();  //panel for records 
         historiquePanel.setLayout(new BoxLayout(historiquePanel, BoxLayout.Y_AXIS));;
         historiquePanel.setLocation(0, 0);
         historiquePanel.setSize(292, 600);
         mainPanel.add(historiquePanel);
         historiquePanel.setBackground(new Color(205, 183, 135));
         
-        JPanel secondHistoriquePanel = new JPanel();
+        JPanel secondHistoriquePanel = new JPanel();  //panel for record, second interface
         secondHistoriquePanel.setLayout(new BoxLayout(secondHistoriquePanel, BoxLayout.Y_AXIS));;
         secondHistoriquePanel.setLocation(0, 0);
         secondHistoriquePanel.setSize(292, 600);
         secondaryPanel.add(secondHistoriquePanel);
         secondHistoriquePanel.setBackground(new Color(205, 183, 135));
+         
+        this.initInterface(mainPanel, joueur1, joueur2, terrain);  //init all component in panel for first interface
+        j2Wind.initInterface(secondaryPanel, joueur1, joueur2, terrain); //same but for second interface 
         
-        this.initInterface(mainPanel, joueur1, joueur2, terrain);
-        j2Wind.initInterface(secondaryPanel, joueur1, joueur2, terrain);
-        
-        Sorcier gagnant = null;
-        String message = "";
-
+        Sorcier gagnant = null; //winner of each turn 
+        String message = "";  //message print on info JOptionPane 
+ 
         while(game){
             
             nbTour ++;
@@ -839,27 +839,27 @@ public class Interface extends javax.swing.JFrame {
             this.askBet(joueur1);
             j2Wind.askBet(joueur2);  //ask player how many mana they will bet 
             
-            if(terrain.getSort()){
+            if(terrain.getSort()){  //spells selection if player can do it
                 this.selectSpells(joueur1);
                 j2Wind.selectSpells(joueur2);
             }
             
-            afficherMise(historiquePanel, joueur1);
+            afficherMise(historiquePanel, joueur1);  //print bet on record 
             afficherMise(historiquePanel, joueur2);
             
-            for(int i = 0; i<10;i++){
+            for(int i = 0; i<10;i++){  //activation of spells, priority order from one to ten 
                 activateSpell(i, joueur1, joueur2, terrain, historiquePanel);
             }
             
             if(joueur1.getSortActuel().contains(3)||joueur2.getSortActuel().contains(3)||joueur1.getSortActuel().contains(4)||joueur2.getSortActuel().contains(4)){
-               this.updateInterfaceManche(joueur1, joueur2, terrain);
-               j2Wind.updateInterfaceManche(joueur1, joueur2, terrain);
+               this.updateInterfaceManche(joueur1, joueur2, terrain);  //if spell end of round or middle activated 
+               j2Wind.updateInterfaceManche(joueur1, joueur2, terrain); //then we update the field 
             }
             
             if(joueur1.getMise()<joueur2.getMise()){  //define winner
                 
                 gagnant = joueur2;
-                if(joueur1.getSortActuel().contains(8)||joueur2.getSortActuel().contains(8)){
+                if(joueur1.getSortActuel().contains(8)||joueur2.getSortActuel().contains(8)){  //changing message if PerdGagne spell was called 
                     message = String.format("Malgré une attaque plus puissante que son adversaire, le feu avance vers %s...", gagnant.getNom());
                 }else{
                     message = String.format("Le feu avance vers la gauche suite aux attaques de %s", gagnant.getNom());
@@ -936,28 +936,28 @@ public class Interface extends javax.swing.JFrame {
             int oldPosJ1 = joueur1.getPosition();
             int oldPosJ2 = joueur2.getPosition();
             boolean finManche = this.verifierFinManche(joueur1, joueur2, terrain);
-            if(finManche){
-                j2Wind.updateInterfaceManche(joueur1, joueur2, terrain);
-                nbManche++;
+            if(finManche){  //if it's the end of the round 
+                j2Wind.updateInterfaceManche(joueur1, joueur2, terrain);  //update the second interface 
+                nbManche++;  
                 nbTour = 0;
             }
             
-            game = this.verifierFinPartie(terrain, joueur1, joueur2);
+            game = this.verifierFinPartie(terrain, joueur1, joueur2);  //we check whether game can end 
             
-            this.synchronizeSecondInterfaceHistorique(historiquePanel, secondHistoriquePanel);
+            this.synchronizeSecondInterfaceHistorique(historiquePanel, secondHistoriquePanel);  //sychrnized both records 
             
-            secondaryPanel.repaint();
+            secondaryPanel.repaint();  //update second interface 
             
-            JOptionPane.showMessageDialog(null, message, "Fin du tour", JOptionPane.INFORMATION_MESSAGE);                  
+            JOptionPane.showMessageDialog(null, message, "Fin du tour", JOptionPane.INFORMATION_MESSAGE);  //show the outcome of the turn                 
         }
         
         message = "Le sorcier "+gagnant.getNom()+" est vainqueur !";
-        JOptionPane.showMessageDialog(null, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, message, "Fin de partie", JOptionPane.INFORMATION_MESSAGE);  //show winner name 
         if(gagnant!=null){
-            db.insertTuples(gagnant.getNom(), gagnant.getCouleur());
+            db.insertTuples(gagnant.getNom(), gagnant.getCouleur()); //adding winner name and color to database 
         }
         
-        j2Wind.dispose();
+        j2Wind.dispose();  //remove second interface 
         
         this.remove(mainPanel);  //remove panel to reset game
         this.repaint();   //update frame
@@ -973,13 +973,13 @@ public class Interface extends javax.swing.JFrame {
         BDD db = new BDD();
         String message = "";
         
-        data = db.getTuples();
+        data = db.getTuples();  //retrieve database results 
         
         for(int i=0;i<data.size();i++){
-            message+=data.get(i)+"\n";
+            message+=data.get(i)+"\n";  //adding it in a string 
         }
         
-        JOptionPane.showMessageDialog(this, message, "High Score", JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "High Score", JOptionPane.PLAIN_MESSAGE);  //Showing database results 
     }//GEN-LAST:event_highScoreButtonMouseClicked
 
     /**
@@ -1006,6 +1006,6 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JMenuItem quit;
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
-    JLabel[] pontInterface = new JLabel[19];
-    JLabel[] positionInterface = new JLabel[19];
+    private JLabel[] pontInterface = new JLabel[19];
+    private JLabel[] positionInterface = new JLabel[19];
 }
