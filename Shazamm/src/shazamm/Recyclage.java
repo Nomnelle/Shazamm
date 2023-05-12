@@ -39,16 +39,12 @@ public class Recyclage extends Carte{
         }
     }
     
-    public boolean validateEffect(int input, Sorcier j1){
+    public static boolean validateEffect(int input, Sorcier j1){
         boolean result;
         if((input<(j1.getMise()+6))){
             if((input>(j1.getMise()-6))){
                 if(input<=j1.getMana()){
-                    if((input>0)){
-                        result = true;
-                    }else{
-                        result = false;
-                    }      
+                    result = (input>0);      
                 }else{
                     result = false;
                 }

@@ -587,6 +587,7 @@ public class Interface extends javax.swing.JFrame {
         BDD db = new BDD();
         startButton.setVisible(false);
         multipleWindowsButton.setVisible(false);
+        this.highScoreButton.setVisible(false);
         
         boolean game = true;
         
@@ -750,6 +751,7 @@ public class Interface extends javax.swing.JFrame {
         
         startButton.setVisible(true);
         multipleWindowsButton.setVisible(true);
+        this.highScoreButton.setVisible(true);
         
     }//GEN-LAST:event_startButtonMouseClicked
 
@@ -762,11 +764,13 @@ public class Interface extends javax.swing.JFrame {
         BDD db = new BDD();
         this.startButton.setVisible(false);
         this.multipleWindowsButton.setVisible(false);
+        this.highScoreButton.setVisible(false);
         
         Interface j2Wind = new Interface();
         
         j2Wind .startButton.setVisible(false);
         j2Wind .multipleWindowsButton.setVisible(false);
+        j2Wind.highScoreButton.setVisible(false);
         j2Wind.setVisible(true);
         
         boolean game = true;
@@ -958,8 +962,9 @@ public class Interface extends javax.swing.JFrame {
         this.remove(mainPanel);  //remove panel to reset game
         this.repaint();   //update frame
         
-        startButton.setVisible(true);
-        multipleWindowsButton.setVisible(true);
+        this.startButton.setVisible(true);
+        this.multipleWindowsButton.setVisible(true);
+        this.highScoreButton.setVisible(true);
     }//GEN-LAST:event_multipleWindowsButtonMouseClicked
 
     private void highScoreButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_highScoreButtonMouseClicked
