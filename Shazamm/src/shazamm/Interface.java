@@ -363,7 +363,7 @@ public class Interface extends javax.swing.JFrame {
                
         }else if ((j2.getMana() == 0)||(t.getPositionFeu()>=j2.getPosition())) {  //j2 perd
             
-            if(j1.getMana()==0){
+            if(j2.getMana()==0){
                 positionInterface[t.getPositionFeu()].setIcon(null);
                 t.setPositionFeu(j2.getPosition());
             }
