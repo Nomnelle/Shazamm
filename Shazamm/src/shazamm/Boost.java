@@ -11,7 +11,6 @@ package shazamm;
 public class Boost extends Carte{
     
     public Boost(){  //constructeur 
-        super();  //constructeur classe mère 
         this.name = "Boost";
         this.image = "/cartes/07r.jpg";
         this.description = "La puissance de mon attaque est augmentée de 7.";

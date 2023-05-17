@@ -15,7 +15,6 @@ import javax.swing.JOptionPane;
 public class Clone extends Carte{
     
     public Clone(){  //constructeur 
-        super();  //constructeur classe mère 
         this.name = "Clone";
         this.image = "/cartes/02r.jpg";
         this.description = "Je pose devant moi une des cartes jouées par l’adversaire au tour précédent.\nCette carte est appliquée à ce tour, comme si je l’avais jouée normalement.";

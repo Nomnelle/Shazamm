@@ -11,7 +11,6 @@ package shazamm;
 public class Aspiration extends Carte{
     
     public Aspiration(){  //constructeur 
-        super();  //constructeur Carte()
         this.name = "Aspiration";
         this.image = "/cartes/14r.jpg";
         this.description = "Ma réserve de Mana s’augmente du montant de la mise de l’adversaire.";

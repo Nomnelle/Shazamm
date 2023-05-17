@@ -11,7 +11,6 @@ package shazamm;
 public class Reserve extends Carte{
     
     public Reserve(){  //constructeur 
-        super();  //constructeur classe mère
         this.name = "Boost réserve";
         this.image = "/cartes/13r.jpg";
         this.description = "Ma réserve de Mana s’augmente de 13 points.\nAprès que j’ai payé ce que je dois.";

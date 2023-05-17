@@ -14,10 +14,6 @@ public abstract class Carte {
     protected String image;  //image de la carte 
     protected String description; //description de la carte
     
-    public Carte(){  //constructeur 
-    }
-    
-    
     public String getName(){  //getter 
         return this.name;
     }
@@ -26,7 +22,7 @@ public abstract class Carte {
         return this.image;
     }
     
-    public String getDescription(){
+    public String getDescription(){  //getter
         return this.description;
     }
     

@@ -11,7 +11,6 @@ package shazamm;
 public class Fin extends Carte{
     
     public Fin(){  //constructeur 
-        super();  //constructeur classe mère 
         this.name = "Fin de la manche!";
         this.image = "/cartes/04r.jpg";
         this.description = "La manche est finie ! Les sorciers se replacent à 3 pas du mur de feu (dans sa position actuelle),\net on commence une nouvelle manche.";

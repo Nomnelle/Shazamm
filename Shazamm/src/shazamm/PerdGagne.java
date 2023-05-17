@@ -11,7 +11,6 @@ package shazamm;
 public class PerdGagne extends Carte{
     
     public PerdGagne(){  //constructeur 
-        super();  //constructeur classe mère 
         this.name = "Qui perd gagne";
         this.image = "/cartes/09r.jpg";
         this.description = "Le mur de feu avance en sens inverse : vers celui qui a gagné ce tour.\nN’a pas d’effet si le mur de feu ne devait pas bouger.";
