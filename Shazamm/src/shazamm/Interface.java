@@ -346,6 +346,11 @@ public class Interface extends javax.swing.JFrame {
             return true;
                 
         }else if((j1.getMana() == 0)||(j1.getPosition() >= t.getPositionFeu())) { //j1 perd
+            
+            if(j1.getMana()==0){
+                positionInterface[t.getPositionFeu()].setIcon(null);
+                t.setPositionFeu(j1.getPosition());
+            }
                 
             if(t.getPositionFeu()<j1.getPosition()){
                 positionInterface[t.getPositionFeu()].setIcon(null);
@@ -357,6 +362,11 @@ public class Interface extends javax.swing.JFrame {
             return true;
                
         }else if ((j2.getMana() == 0)||(t.getPositionFeu()>=j2.getPosition())) {  //j2 perd
+            
+            if(j1.getMana()==0){
+                positionInterface[t.getPositionFeu()].setIcon(null);
+                t.setPositionFeu(j2.getPosition());
+            }
                 
             if (j2.getPosition() < t.getPositionFeu()) {  //le feu ne dépasse pas le j2
                 positionInterface[t.getPositionFeu()].setIcon(null);
